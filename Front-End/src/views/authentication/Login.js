@@ -1,13 +1,42 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useCallback } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { Grid, Box, Card, Stack, Typography } from '@mui/material';
-
-// components
 import PageContainer from 'src/components/container/PageContainer';
 import Logo from 'src/layouts/full/shared/logo/Logo';
 import AuthLogin from './auth/AuthLogin';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { login } from 'src/Services/AuthServices';
+import { useDispatch, useSelector } from 'react-redux';
+
+const initialValues = {
+  email: '',
+  password: '',
+};
 
 const Login2 = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { loading } = useSelector((state) => state.auth);
+
+  const onSubmit = useCallback(async (v) => {
+    const res = await dispatch(login(v));
+    if (res) navigate('/');
+  }, []);
+
+  const { handleChange, handleSubmit, errors, values, handleBlur, touched } = useFormik({
+    initialValues: initialValues,
+    onSubmit: (values) => onSubmit(values),
+    validationSchema: Yup.object({
+      email: Yup.string().email('Invalid email address').required('Required'),
+      password: Yup.string()
+        .required('No password provided.')
+        .min(8, 'Password is too short - should be 8 chars minimum.')
+        .matches(/[a-zA-Z]/, 'Password can only contain Latin letters.'),
+    }),
+  });
+
   return (
     <PageContainer title="Login" description="this is Login page">
       <Box
@@ -41,6 +70,13 @@ const Login2 = () => {
                 <Logo />
               </Box>
               <AuthLogin
+                errors={errors}
+                loading={loading}
+                touched={touched}
+                values={values}
+                handleBlur={handleBlur}
+                onSubmit={handleSubmit}
+                handleChange={handleChange}
                 subtext={
                   <Typography variant="subtitle1" textAlign="center" color="textSecondary" mb={1}>
                     For your Solar products

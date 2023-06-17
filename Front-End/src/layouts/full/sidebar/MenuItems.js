@@ -1,5 +1,10 @@
 import {
-  IconAperture, IconCopy, IconLayoutDashboard, IconLogin, IconMoodHappy, IconTypography, IconUserPlus
+  IconAperture,
+  IconCopy,
+  IconLayoutDashboard,
+  IconListDetails,
+  IconMoodHappy,
+  IconTypography,
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -17,9 +22,15 @@ const Menuitems = [
     href: '/dashboard',
   },
   {
-    navlabel: true,
-    subheader: 'Utilities',
+    id: uniqueId(),
+    title: 'Projects',
+    icon: IconListDetails,
+    href: '/projects',
   },
+  // {
+  //   navlabel: true,
+  //   subheader: 'Utilities',
+  // },
   {
     id: uniqueId(),
     title: 'Typography',
@@ -32,22 +43,22 @@ const Menuitems = [
     icon: IconCopy,
     href: '/ui/shadow',
   },
-  {
-    navlabel: true,
-    subheader: 'Auth',
-  },
-  {
-    id: uniqueId(),
-    title: 'Login',
-    icon: IconLogin,
-    href: '/auth/login',
-  },
-  {
-    id: uniqueId(),
-    title: 'Register',
-    icon: IconUserPlus,
-    href: '/auth/register',
-  },
+  // {
+  //   navlabel: true,
+  //   subheader: 'Auth',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Login',
+  //   icon: IconLogin,
+  //   href: '/auth/login',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Register',
+  //   icon: IconUserPlus,
+  //   href: '/auth/register',
+  // },
   {
     navlabel: true,
     subheader: 'Extra',
