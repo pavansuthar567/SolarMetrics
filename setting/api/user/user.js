@@ -1,4 +1,4 @@
-const { body, validationResult, header, param } = require("express-validator");
+const { body, validationResult, header } = require("express-validator");
 
 module.exports = {
   BindUrl: function () {
