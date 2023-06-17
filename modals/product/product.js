@@ -2,12 +2,13 @@ const productSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+    unique: true,
   },
   user_id: {
     type: ObjectId,
     required: true,
   },
-  product_id: {
+  project_id: {
     type: ObjectId,
     required: true,
   },
@@ -15,7 +16,7 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  lon: {
+  lng: {
     type: Number,
     required: true,
   },

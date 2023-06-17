@@ -2,57 +2,35 @@ const { body, validationResult, header, param } = require("express-validator");
 
 module.exports = {
   BindUrl: function () {
-    // User Login
+    // Product Create
     app.post(
-      "/api/login",
-      body("email").not().isEmpty().trim(),
-      body("password")
-        .isLength({ min: 5 })
-        .withMessage("Password length should be greater than 5"), //password validation
+      "/api/products",
+      header("authorization").not().isEmpty().trim(),
+      body("title").not().isEmpty().trim(),
+      body("lat").not().isEmpty().trim().isNumeric(),
+      body("lng").not().isEmpty().trim().isNumeric(),
+      body("project_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid project_id"),
       async (req, res) => {
         try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
           const errors = validationResult(req);
           if (!errors.isEmpty()) {
             var respData = commonController.errorValidationResponse(errors);
             res.status(respData.status).send(respData);
           } else {
-            //calling controller function
-            var data = await req.body;
-            userController.LOGIN(data, function (respData) {
-              res.status(respData.status).send(respData);
-            });
-          }
-        } catch (err) {
-          var respData = commonController.errorValidationResponse(err);
-          res.status(respData.status).send(respData);
-        }
-      }
-    );
-
-    // User Log Out
-    app.get(
-      "/api/logout",
-      header("authorization").not().isEmpty().trim(),
-      async function (req, res) {
-        try {
-          const errors = validationResult(req);
-          if (!errors.isEmpty()) {
-            var respData = commonController.errorValidationResponse(errors);
-            res.status(respData.status).send(respData);
-          } else {
-            //calling controller function
-
             apiJwtController.DECODE(req, function (respData) {
               if (respData.status !== 200) {
                 res.status(respData.status).send(respData);
               } else {
-                console.log("respData", respData);
-                var sendData = {};
-                sendData.user_data = respData.data;
-                sendData.token = req.headers.authorization.split(" ")[1];
-
-                userController.LOGOUT(sendData, function (respData) {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                productController.CREATE_PRODUCT(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -65,42 +43,31 @@ module.exports = {
       }
     );
 
-    // User Sign Up
-    app.post(
-      "/api/signup",
-      body("name").not().isEmpty().trim(),
-      body("email").not().isEmpty().trim(),
-      body("password")
-        .isLength({ min: 5 })
-        .withMessage("Password length should be greater than 5"), //password validation
-      async (req, res) => {
-        try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
-          const errors = validationResult(req);
-          if (!errors.isEmpty()) {
-            var respData = commonController.errorValidationResponse(errors);
-            res.status(respData.status).send(respData);
-          } else {
-            //calling controller function
-            let data = req.body;
-            userController.CREATE(data, function (respData) {
-              res.status(respData.status).send(respData);
-            });
-          }
-        } catch (err) {
-          var respData = commonController.errorValidationResponse(err);
-          res.status(respData.status).send(respData);
-        }
-      }
-    );
-
-    // User Update
+    // Product Update
     app.put(
-      "/api/profile",
+      "/api/products/:product_id",
       header("authorization").not().isEmpty().trim(),
+      param("product_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid product_id"),
+      body("project_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid project_id"),
+      body("title").not().isEmpty().trim(),
+      body("lat").not().isEmpty().trim().isNumeric(),
+      body("lng").not().isEmpty().trim().isNumeric(),
       async (req, res) => {
         try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
           const errors = validationResult(req);
           if (!errors.isEmpty()) {
             var respData = commonController.errorValidationResponse(errors);
@@ -110,10 +77,10 @@ module.exports = {
               if (respData.status !== 200) {
                 res.status(respData.status).send(respData);
               } else {
-                //calling controller function
                 let data = req.body;
-                data.userData = respData.data;
-                userController.UPDATE(data, function (respData) {
+                data.user_id = respData.data._id;
+                data.product_id = req.params.product_id;
+                productController.UPDATE_PRODUCT(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -126,13 +93,20 @@ module.exports = {
       }
     );
 
-    // User Get Single
-    app.get(
-      "/api/profile",
+    // Product Delete
+    app.delete(
+      "/api/products/:product_id",
       header("authorization").not().isEmpty().trim(),
+      param("product_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid product_id"),
       async (req, res) => {
         try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
           const errors = validationResult(req);
           if (!errors.isEmpty()) {
             var respData = commonController.errorValidationResponse(errors);
@@ -142,74 +116,10 @@ module.exports = {
               if (respData.status !== 200) {
                 res.status(respData.status).send(respData);
               } else {
-                //calling controller function
-                let data = {};
-                data.userData = respData.data;
-                userController.GET_SINGLE(data, function (respData) {
-                  res.status(respData.status).send(respData);
-                });
-              }
-            });
-          }
-        } catch (err) {
-          var respData = commonController.errorValidationResponse(err);
-          res.status(respData.status).send(respData);
-        }
-      }
-    );
-
-    // User Forgot Password
-    app.get(
-      "/api/forgot_password",
-      body("email").not().isEmpty().trim(),
-      async (req, res) => {
-        try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
-          const errors = validationResult(req);
-          if (!errors.isEmpty()) {
-            var respData = commonController.errorValidationResponse(errors);
-            res.status(respData.status).send(respData);
-          } else {
-            //calling controller function
-            let data = req.body;
-            data.userData = respData.data;
-            userController.FORGOT_PASSWORD(data, function (respData) {
-              res.status(respData.status).send(respData);
-            });
-          }
-        } catch (err) {
-          var respData = commonController.errorValidationResponse(err);
-          res.status(respData.status).send(respData);
-        }
-      }
-    );
-
-    // User Get Single
-    app.get(
-      "/api/reset_password",
-      header("authorization").not().isEmpty().trim(),
-      body("password")
-        .isLength({ min: 5 })
-        .withMessage("Password length should be greater than 5"), //password validation
-      body("confirm_password")
-        .isLength({ min: 5 })
-        .withMessage("Confirm password length should be greater than 5"), //password validation
-      async (req, res) => {
-        try {
-          // Finds the validation errors in this request and wraps them in an object with handy functions
-          const errors = validationResult(req);
-          if (!errors.isEmpty()) {
-            var respData = commonController.errorValidationResponse(errors);
-            res.status(respData.status).send(respData);
-          } else {
-            apiJwtController.DECODE(req, function (respData) {
-              if (respData.status !== 200) {
-                res.status(respData.status).send(respData);
-              } else {
-                //calling controller function
                 let data = req.body;
-                data.userData = respData.data;
-                userController.RESET_PASSWORD(data, function (respData) {
+                data.user_id = respData.data._id;
+                data.product_id = req.params.product_id;
+                productController.DELETE_PRODUCT(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -222,71 +132,73 @@ module.exports = {
       }
     );
 
-    // User Delete
-    // app.delete(
-    //     "/api/users/delete/:user_id",
-    //     header('authorization').not().isEmpty().trim(),
-    //     param('user_id').not().isEmpty().trim().isLength({
-    //         min: 24
-    //     }).withMessage("please valid user_id"),
-    //     async (req, res) => {
-    //         try {
-    //             // Finds the validation errors in this request and wraps them in an object with handy functions
-    //             const errors = validationResult(req);
-    //             if (!errors.isEmpty()) {
-    //                 var respData = commonController.errorValidationResponse(errors);
-    //                 res.status(respData.status).send(respData);
-    //             } else {
-    //                 apiJwtController.DECODE(req, function (respData) {
-    //                     if (respData.status !== 200) {
-    //                         res.status(respData.status).send(respData);
-    //                     } else {
-    //                         //calling controller function
-    //                         let data = {};
-    //                         data.userData = respData.data
-    //                         data.user_id = req.params.user_id // id of the user to be deleted
-    //                         userController.DELETE(data, function (respData) {
-    //                             res.status(respData.status).send(respData);
-    //                         });
-    //                     }
-    //                 })
-    //             }
-    //         } catch (err) {
-    //             var respData = commonController.errorValidationResponse(err);
-    //             res.status(respData.status).send(respData);
-    //         }
-    //     }
-    // );
+    // Get Product
+    app.get(
+      "/api/products/:product_id",
+      header("authorization").not().isEmpty().trim(),
+      param("product_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid product_id"),
+      async (req, res) => {
+        try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            var respData = commonController.errorValidationResponse(errors);
+            res.status(respData.status).send(respData);
+          } else {
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                data.product_id = req.params.product_id;
+                productController.GET_PRODUCT(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
+            });
+          }
+        } catch (err) {
+          var respData = commonController.errorValidationResponse(err);
+          res.status(respData.status).send(respData);
+        }
+      }
+    );
 
-    // // User Get List
-    // app.get(
-    //   "/api/users/list",
-    //   header("authorization").not().isEmpty().trim(),
-    //   async (req, res) => {
-    //     try {
-    //       // Finds the validation errors in this request and wraps them in an object with handy functions
-    //       const errors = validationResult(req);
-    //       if (!errors.isEmpty()) {
-    //         var respData = commonController.errorValidationResponse(errors);
-    //         res.status(respData.status).send(respData);
-    //       } else {
-    //         apiJwtController.DECODE(req, function (respData) {
-    //           if (respData.status !== 200) {
-    //             res.status(respData.status).send(respData);
-    //           } else {
-    //             //calling controller function
-    //             let data = {};
-    //             userController.GET_LIST(data, function (respData) {
-    //               res.status(respData.status).send(respData);
-    //             });
-    //           }
-    //         });
-    //       }
-    //     } catch (err) {
-    //       var respData = commonController.errorValidationResponse(err);
-    //       res.status(respData.status).send(respData);
-    //     }
-    //   }
-    // );
+    // Get Product List
+    app.get(
+      "/api/products",
+      header("authorization").not().isEmpty().trim(),
+      async (req, res) => {
+        try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            var respData = commonController.errorValidationResponse(errors);
+            res.status(respData.status).send(respData);
+          } else {
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                productController.GET_PRODUCT_LIST(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
+            });
+          }
+        } catch (err) {
+          var respData = commonController.errorValidationResponse(err);
+          res.status(respData.status).send(respData);
+        }
+      }
+    );
   },
 };
