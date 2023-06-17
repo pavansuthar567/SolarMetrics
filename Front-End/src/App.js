@@ -22,10 +22,12 @@ function App() {
     (error) => {
       console.log(error);
       const { status } = error?.response?.data || {};
-      if (status === 401) {
-        localStorage.removeItem('UserPreferences');
-        window.location.href = '/login';
-      }
+      console.log('error?.response', error?.response);
+      console.log('status', status);
+      // if (status === 401) {
+      //   localStorage.removeItem('UserPreferences');
+      //   window.location.href = '/auth/login';
+      // }
       return Promise.reject(error);
     },
   );

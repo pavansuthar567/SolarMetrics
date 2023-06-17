@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  Select,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Box, Button, FormControl, Grid, MenuItem, Select, Stack, Typography } from '@mui/material';
 import { useFormik } from 'formik';
 import { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -40,7 +30,6 @@ const UserProfile = () => {
       location: user?.location || '',
       mobile: user?.mobile || '',
     },
-    // onSubmit: (values) => onSubmit(values),
     validationSchema: Yup.object({
       email: Yup.string().email('Invalid email address').required('Required'),
       location: Yup.string().required('Required'),
@@ -124,15 +113,23 @@ const UserProfile = () => {
                   <Select
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
-                    value={values?.code || ''}
+                    name="country_code"
+                    value={values?.country_code || ''}
                     onBlur={handleBlur}
                     onChange={handleChange}
                   >
-                    {countryCodes?.map((x) => (
-                      <MenuItem value={x?.value}>{x?.label}</MenuItem>
+                    {countryCodes?.map((x, i) => (
+                      <MenuItem value={x?.value} key={i}>
+                        {x?.label}
+                      </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
+                {errors?.country_code && touched?.country_code && (
+                  <p style={{ marginBottom: 0, marginTop: 0, color: 'red' }}>
+                    {errors?.country_code}
+                  </p>
+                )}
               </Grid>
               <Grid item xs={8}>
                 <Typography
@@ -173,12 +170,15 @@ const UserProfile = () => {
               fullWidth
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={values?.code || ''}
+              name="location"
+              value={values?.location || ''}
               onChange={handleChange}
               onBlur={handleBlur}
             >
-              {countryCodes?.map((x) => (
-                <MenuItem value={x?.value}>{x?.country}</MenuItem>
+              {countryCodes?.map((x, i) => (
+                <MenuItem value={x?.country} key={i}>
+                  {x?.country}
+                </MenuItem>
               ))}
             </Select>
             {errors?.location && touched?.location && (

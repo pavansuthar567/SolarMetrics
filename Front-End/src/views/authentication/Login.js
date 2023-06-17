@@ -7,7 +7,7 @@ import AuthLogin from './auth/AuthLogin';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { login } from 'src/Services/AuthServices';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 const initialValues = {
   email: '',
@@ -17,6 +17,8 @@ const initialValues = {
 const Login2 = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { loading } = useSelector((state) => state.auth);
 
   const onSubmit = useCallback(async (v) => {
     const res = await dispatch(login(v));
@@ -69,6 +71,7 @@ const Login2 = () => {
               </Box>
               <AuthLogin
                 errors={errors}
+                loading={loading}
                 touched={touched}
                 values={values}
                 handleBlur={handleBlur}

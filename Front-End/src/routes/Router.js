@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 import Loadable from '../layouts/full/shared/loadable/Loadable';
 import ProtectedRoutes from './ProtectedRoutes';
 import UserProfile from 'src/views/UserProfile';
+import Project from 'src/views/project';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -30,6 +31,15 @@ const Router = [
         element: (
           <ProtectedRoutes>
             <Dashboard />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: '/projects',
+        exact: true,
+        element: (
+          <ProtectedRoutes>
+            <Project />
           </ProtectedRoutes>
         ),
       },

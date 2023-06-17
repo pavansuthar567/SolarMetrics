@@ -2,10 +2,9 @@ import {
   IconAperture,
   IconCopy,
   IconLayoutDashboard,
-  IconLogin,
+  IconListDetails,
   IconMoodHappy,
   IconTypography,
-  IconUserPlus,
 } from '@tabler/icons';
 
 import { uniqueId } from 'lodash';
@@ -22,22 +21,28 @@ const Menuitems = [
     icon: IconLayoutDashboard,
     href: '/dashboard',
   },
+  {
+    id: uniqueId(),
+    title: 'Projects',
+    icon: IconListDetails,
+    href: '/projects',
+  },
   // {
   //   navlabel: true,
   //   subheader: 'Utilities',
   // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Typography',
-  //   icon: IconTypography,
-  //   href: '/ui/typography',
-  // },
-  // {
-  //   id: uniqueId(),
-  //   title: 'Shadow',
-  //   icon: IconCopy,
-  //   href: '/ui/shadow',
-  // },
+  {
+    id: uniqueId(),
+    title: 'Typography',
+    icon: IconTypography,
+    href: '/ui/typography',
+  },
+  {
+    id: uniqueId(),
+    title: 'Shadow',
+    icon: IconCopy,
+    href: '/ui/shadow',
+  },
   // {
   //   navlabel: true,
   //   subheader: 'Auth',

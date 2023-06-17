@@ -3,6 +3,7 @@ import { Box, Typography, FormGroup, Button, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
+import { LoadingButton } from '@mui/lab';
 
 const AuthLogin = ({
   title,
@@ -14,6 +15,7 @@ const AuthLogin = ({
   errors,
   handleBlur,
   touched,
+  loading,
 }) => (
   <>
     {title ? (
@@ -90,18 +92,27 @@ const AuthLogin = ({
       </Stack>
     </Stack>
     <Box>
-      <Button
+      {/* <Button
         color="primary"
         variant="contained"
         size="large"
         fullWidth
-        component={Link}
-        to="/"
         type="submit"
         onClick={onSubmit}
       >
         Sign In
-      </Button>
+      </Button> */}
+      <LoadingButton
+        loading={loading}
+        color="primary"
+        variant="contained"
+        size="large"
+        fullWidth
+        type="submit"
+        onClick={onSubmit}
+      >
+        Save
+      </LoadingButton>
     </Box>
     {subtitle}
   </>
