@@ -19,7 +19,7 @@ module.exports = {
           } else {
             //calling controller function
             var data = await req.body;
-            userApiController.LOGIN(data, function (respData) {
+            userController.LOGIN(data, function (respData) {
               res.status(respData.status).send(respData);
             });
           }
@@ -52,7 +52,7 @@ module.exports = {
                 sendData.user_data = respData.data;
                 sendData.token = req.headers.authorization.split(" ")[1];
 
-                userApiController.LOGOUT(sendData, function (respData) {
+                userController.LOGOUT(sendData, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -83,7 +83,7 @@ module.exports = {
           } else {
             //calling controller function
             let data = req.body;
-            userApiController.CREATE(data, function (respData) {
+            userController.CREATE(data, function (respData) {
               res.status(respData.status).send(respData);
             });
           }
@@ -113,7 +113,7 @@ module.exports = {
                 //calling controller function
                 let data = req.body;
                 data.userData = respData.data;
-                userApiController.UPDATE(data, function (respData) {
+                userController.UPDATE(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -145,7 +145,7 @@ module.exports = {
                 //calling controller function
                 let data = {};
                 data.userData = respData.data;
-                userApiController.GET_SINGLE(data, function (respData) {
+                userController.GET_SINGLE(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -173,7 +173,7 @@ module.exports = {
             //calling controller function
             let data = req.body;
             data.userData = respData.data;
-            userApiController.FORGOT_PASSWORD(data, function (respData) {
+            userController.FORGOT_PASSWORD(data, function (respData) {
               res.status(respData.status).send(respData);
             });
           }
@@ -209,7 +209,7 @@ module.exports = {
                 //calling controller function
                 let data = req.body;
                 data.userData = respData.data;
-                userApiController.RESET_PASSWORD(data, function (respData) {
+                userController.RESET_PASSWORD(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
               }
@@ -245,7 +245,7 @@ module.exports = {
     //                         let data = {};
     //                         data.userData = respData.data
     //                         data.user_id = req.params.user_id // id of the user to be deleted
-    //                         userApiController.DELETE(data, function (respData) {
+    //                         userController.DELETE(data, function (respData) {
     //                             res.status(respData.status).send(respData);
     //                         });
     //                     }
@@ -276,7 +276,7 @@ module.exports = {
     //           } else {
     //             //calling controller function
     //             let data = {};
-    //             userApiController.GET_LIST(data, function (respData) {
+    //             userController.GET_LIST(data, function (respData) {
     //               res.status(respData.status).send(respData);
     //             });
     //           }

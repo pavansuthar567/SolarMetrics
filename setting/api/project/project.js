@@ -1,10 +1,11 @@
-const { body, validationResult, header } = require("express-validator");
+const { body, validationResult, header, param } = require("express-validator");
 
 module.exports = {
   BindUrl: function () {
-    // Create Project
+    // Project Create
     app.post(
       "/api/projects",
+      header("authorization").not().isEmpty().trim(),
       body("title").not().isEmpty().trim(),
       body("description").optional().trim(),
       async (req, res) => {
@@ -14,9 +15,16 @@ module.exports = {
             var respData = commonController.errorValidationResponse(errors);
             res.status(respData.status).send(respData);
           } else {
-            let data = req.body;
-            projectApiController.CREATE(data, function (respData) {
-              res.status(respData.status).send(respData);
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                projectController.CREATE_PROJECT(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
             });
           }
         } catch (err) {
@@ -26,12 +34,20 @@ module.exports = {
       }
     );
 
-    // Update Project
+    // Project Update
     app.put(
       "/api/projects/:project_id",
+      header("authorization").not().isEmpty().trim(),
+      param("project_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid project_id"),
       body("title").not().isEmpty().trim(),
       body("description").optional().trim(),
-      body("user_id").not().isEmpty().trim(),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -39,10 +55,17 @@ module.exports = {
             var respData = commonController.errorValidationResponse(errors);
             res.status(respData.status).send(respData);
           } else {
-            let data = req.body;
-            data.project_id = req.params.project_id;
-            projectApiController.UPDATE(data, function (respData) {
-              res.status(respData.status).send(respData);
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                data.project_id = req.params.project_id;
+                projectController.UPDATE_PROJECT(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
             });
           }
         } catch (err) {
@@ -52,44 +75,112 @@ module.exports = {
       }
     );
 
-    // Get Project Details
-    app.get("/api/projects/:project_id", async (req, res) => {
-      try {
-        let data = {};
-        data.project_id = req.params.project_id;
-        projectApiController.GET_SINGLE(data, function (respData) {
+    // Project Delete
+    app.delete(
+      "/api/projects/:project_id",
+      header("authorization").not().isEmpty().trim(),
+      param("project_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid project_id"),
+      async (req, res) => {
+        try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            var respData = commonController.errorValidationResponse(errors);
+            res.status(respData.status).send(respData);
+          } else {
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                data.project_id = req.params.project_id;
+                projectController.DELETE_PROJECT(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
+            });
+          }
+        } catch (err) {
+          var respData = commonController.errorValidationResponse(err);
           res.status(respData.status).send(respData);
-        });
-      } catch (err) {
-        var respData = commonController.errorValidationResponse(err);
-        res.status(respData.status).send(respData);
+        }
       }
-    });
+    );
 
-    // Delete Project
-    app.delete("/api/projects/:project_id", async (req, res) => {
-      try {
-        let data = {};
-        data.project_id = req.params.project_id;
-        projectApiController.DELETE(data, function (respData) {
+    // Get Project
+    app.get(
+      "/api/projects/:project_id",
+      header("authorization").not().isEmpty().trim(),
+      param("project_id")
+        .not()
+        .isEmpty()
+        .trim()
+        .isLength({
+          min: 24,
+        })
+        .withMessage("Please provide a valid project_id"),
+      async (req, res) => {
+        try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            var respData = commonController.errorValidationResponse(errors);
+            res.status(respData.status).send(respData);
+          } else {
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                data.project_id = req.params.project_id;
+                projectController.GET_PROJECT(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
+            });
+          }
+        } catch (err) {
+          var respData = commonController.errorValidationResponse(err);
           res.status(respData.status).send(respData);
-        });
-      } catch (err) {
-        var respData = commonController.errorValidationResponse(err);
-        res.status(respData.status).send(respData);
+        }
       }
-    });
+    );
 
-    // Get All Projects
-    app.get("/api/projects", async (req, res) => {
-      try {
-        projectApiController.GET_LIST(function (respData) {
+    // Get Project List
+    app.get(
+      "/api/projects",
+      header("authorization").not().isEmpty().trim(),
+      async (req, res) => {
+        try {
+          const errors = validationResult(req);
+          if (!errors.isEmpty()) {
+            var respData = commonController.errorValidationResponse(errors);
+            res.status(respData.status).send(respData);
+          } else {
+            apiJwtController.DECODE(req, function (respData) {
+              if (respData.status !== 200) {
+                res.status(respData.status).send(respData);
+              } else {
+                let data = req.body;
+                data.user_id = respData.data._id;
+                projectController.GET_PROJECT_LIST(data, function (respData) {
+                  res.status(respData.status).send(respData);
+                });
+              }
+            });
+          }
+        } catch (err) {
+          var respData = commonController.errorValidationResponse(err);
           res.status(respData.status).send(respData);
-        });
-      } catch (err) {
-        var respData = commonController.errorValidationResponse(err);
-        res.status(respData.status).send(respData);
+        }
       }
-    });
+    );
   },
 };

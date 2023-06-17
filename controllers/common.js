@@ -124,7 +124,7 @@ module.exports = {
       }
     });
   },
-  getSuccessSendData: (data, msg) => {
+  getSuccessSendData: (data = {}, msg = "") => {
     return {
       status: 200,
       err: 0,
@@ -143,7 +143,7 @@ module.exports = {
       sendData.msg = `${Object.keys(err.keyValue)[0]} already in use.`;
     } else {
       sendData.msg =
-        err.message || "Something went wrong, please try again later";
+        err.message || msg || "Something went wrong, please try again later";
     }
     return sendData;
   },
