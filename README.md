@@ -1,3 +1,3 @@
 # SolarMetrics-BackEnd
 
-User can login, Shows Projects with Solar Products on Map, Shows Electricity output with Chart
+SolarMetrics showcases solar projects generating electricity. It offers a user-friendly interface to explore solar-powered projects, visualizing electricity output through interactive charts. Users track and analyze performance, gaining insights into energy production. It empowers engagement with renewable energy and understanding of its impact.
