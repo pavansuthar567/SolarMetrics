@@ -4,13 +4,19 @@ const { getErrorSendData, getSuccessSendData } = require("../common");
 module.exports = {
   CREATE_PRODUCT: async function (data, callback) {
     let sendData = getErrorSendData();
-    const { user_id, project_id } = data || {};
+    const { user_id, project_id, orientation } = data || {};
 
     try {
+      if (orientation > 3) {
+        sendData.msg = "orientation value should be between 0 and 3";
+        return callback(sendData);
+      }
+
       data.user_id = new ObjectId(user_id);
       data.project_id = new ObjectId(project_id);
       data.created_at = new Date();
       data.updated_at = new Date();
+      data.is_default = false;
 
       const product = await productModal.create(data);
       sendData = getSuccessSendData(product, "Product created successfully");
@@ -22,9 +28,14 @@ module.exports = {
 
   UPDATE_PRODUCT: async function (data, callback) {
     let sendData = getErrorSendData();
-    const { product_id, user_id } = data || {};
+    const { product_id, user_id, orientation } = data || {};
 
     try {
+      if (orientation > 3) {
+        sendData.msg = "orientation value should be between 0 and 3";
+        return callback(sendData);
+      }
+
       const cond = {
         _id: new ObjectId(product_id),
         user_id: new ObjectId(user_id),
@@ -35,7 +46,10 @@ module.exports = {
         return callback(sendData);
       }
 
+      data.user_id = new ObjectId(user_id);
+      data.project_id = new ObjectId(project_id);
       data.updated_at = new Date();
+      data.is_default = false;
       await productModal.updateOne(cond, data);
       const updatedProduct = await productModal.findOne(cond);
 
@@ -101,10 +115,13 @@ module.exports = {
 
   GET_PRODUCT_LIST: async function (data, callback) {
     let sendData = getErrorSendData();
-    const { user_id } = data || {};
+    const { user_id, project_id } = data || {};
 
     try {
-      const cond = { user_id: new ObjectId(user_id) };
+      const cond = {
+        user_id: new ObjectId(user_id),
+        project_id: new ObjectId(project_id),
+      };
       const products = await productModal
         .find(cond)
         .select("-user_id") // Exclude the user_id field from the query result

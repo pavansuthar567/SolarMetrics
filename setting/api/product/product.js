@@ -1,22 +1,24 @@
-const { body, validationResult, header, param } = require("express-validator");
+const { body, validationResult, header } = require("express-validator");
+const {
+  isMongoId,
+  isString,
+  isNumber,
+} = require("../../../controllers/common");
 
 module.exports = {
   BindUrl: function () {
     // Product Create
     app.post(
-      "/api/products",
-      header("authorization").not().isEmpty().trim(),
-      body("title").not().isEmpty().trim(),
-      body("lat").not().isEmpty().trim().isNumeric(),
-      body("lng").not().isEmpty().trim().isNumeric(),
-      body("project_id")
-        .not()
-        .isEmpty()
-        .trim()
-        .isLength({
-          min: 24,
-        })
-        .withMessage("Please provide a valid project_id"),
+      "/api/projects/:project_id/products",
+      isString("authorization", "header"),
+      isString("title", "body"),
+      isNumber("lat", "body"),
+      isNumber("lng", "body"),
+      isNumber("power_peak_in_watt", "body"),
+      isNumber("orientation", "body"),
+      isNumber("inclination", "body"),
+      isNumber("area_sm", "body"),
+      isMongoId("project_id", "param"),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -30,6 +32,7 @@ module.exports = {
               } else {
                 let data = req.body;
                 data.user_id = respData.data._id;
+                data.project_id = req.params.project_id;
                 productController.CREATE_PRODUCT(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
@@ -45,27 +48,17 @@ module.exports = {
 
     // Product Update
     app.put(
-      "/api/products/:product_id",
-      header("authorization").not().isEmpty().trim(),
-      param("product_id")
-        .not()
-        .isEmpty()
-        .trim()
-        .isLength({
-          min: 24,
-        })
-        .withMessage("Please provide a valid product_id"),
-      body("project_id")
-        .not()
-        .isEmpty()
-        .trim()
-        .isLength({
-          min: 24,
-        })
-        .withMessage("Please provide a valid project_id"),
-      body("title").not().isEmpty().trim(),
-      body("lat").not().isEmpty().trim().isNumeric(),
-      body("lng").not().isEmpty().trim().isNumeric(),
+      "/api/projects/:project_id/products/:product_id",
+      isString("authorization", "header"),
+      isString("title", "body"),
+      isNumber("lat", "body"),
+      isNumber("lng", "body"),
+      isNumber("power_peak_in_watt", "body"),
+      isNumber("orientation", "body"),
+      isNumber("inclination", "body"),
+      isNumber("area_sm", "body"),
+      isMongoId("project_id", "param"),
+      isMongoId("product_id", "param"),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -95,16 +88,10 @@ module.exports = {
 
     // Product Delete
     app.delete(
-      "/api/products/:product_id",
-      header("authorization").not().isEmpty().trim(),
-      param("product_id")
-        .not()
-        .isEmpty()
-        .trim()
-        .isLength({
-          min: 24,
-        })
-        .withMessage("Please provide a valid product_id"),
+      "/api/projects/:project_id/products/:product_id",
+      isString("authorization", "header"),
+      isMongoId("project_id", "param"),
+      isMongoId("product_id", "param"),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -134,16 +121,10 @@ module.exports = {
 
     // Get Product
     app.get(
-      "/api/products/:product_id",
-      header("authorization").not().isEmpty().trim(),
-      param("product_id")
-        .not()
-        .isEmpty()
-        .trim()
-        .isLength({
-          min: 24,
-        })
-        .withMessage("Please provide a valid product_id"),
+      "/api/projects/:project_id/products/:product_id",
+      isString("authorization", "header"),
+      isMongoId("project_id", "param"),
+      isMongoId("product_id", "param"),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -173,8 +154,9 @@ module.exports = {
 
     // Get Product List
     app.get(
-      "/api/products",
-      header("authorization").not().isEmpty().trim(),
+      "/api/projects/:project_id/products",
+      isString("authorization", "header"),
+      isMongoId("project_id", "param"),
       async (req, res) => {
         try {
           const errors = validationResult(req);
@@ -188,6 +170,7 @@ module.exports = {
               } else {
                 let data = req.body;
                 data.user_id = respData.data._id;
+                data.project_id = req.params.project_id;
                 productController.GET_PRODUCT_LIST(data, function (respData) {
                   res.status(respData.status).send(respData);
                 });
