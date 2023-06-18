@@ -4,6 +4,7 @@ import Loadable from '../layouts/full/shared/loadable/Loadable';
 import ProtectedRoutes from './ProtectedRoutes';
 import UserProfile from 'src/views/UserProfile';
 import Project from 'src/views/project';
+import ProjectOverView from 'src/views/project/ProjectOverView';
 
 /* ***Layouts**** */
 const FullLayout = Loadable(lazy(() => import('../layouts/full/FullLayout')));
@@ -40,6 +41,15 @@ const Router = [
         element: (
           <ProtectedRoutes>
             <Project />
+          </ProtectedRoutes>
+        ),
+      },
+      {
+        path: '/projects/:project',
+        exact: true,
+        element: (
+          <ProtectedRoutes>
+            <ProjectOverView />
           </ProtectedRoutes>
         ),
       },

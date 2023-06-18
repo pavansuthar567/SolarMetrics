@@ -14,8 +14,7 @@ export const getProjectList = () => async (dispatch) => {
       return true;
     }
   } catch (error) {
-    console.log('error', error);
-    toast.error('Something went wrong, Please try again later');
+    toastError();
     return false;
   } finally {
     dispatch(setLoading(false));
@@ -27,14 +26,13 @@ export const createProject = (payload) => async (dispatch) => {
     if (payload) {
       dispatch(setLoading(true));
       const response = await axios.post(`${REACT_APP_APIURL}/projects`, payload);
-      const { err, data } = response.data;
+      const { err } = response.data;
       if (err === 0) {
         return true;
       }
     }
   } catch (error) {
-    console.log('error', error);
-    toast.error('Something went wrong, Please try again later');
+    toastError();
     return false;
   } finally {
     dispatch(setLoading(false));
@@ -46,14 +44,14 @@ export const updateProject = (payload, projectId) => async (dispatch) => {
     if (payload) {
       dispatch(setLoading(true));
       const response = await axios.put(`${REACT_APP_APIURL}/projects/${projectId}`, payload);
-      const { err, data } = response.data;
+      const { err } = response.data;
       if (err === 0) {
+        toast.success('Project updated successfully');
         return true;
       }
     }
   } catch (error) {
-    console.log('error', error);
-    toast.error('Something went wrong, Please try again later');
+    toastError();
     return false;
   } finally {
     dispatch(setLoading(false));
@@ -65,18 +63,20 @@ export const deleteProduct = (projectId) => async (dispatch) => {
     if (projectId) {
       dispatch(setLoading(true));
       const response = await axios.delete(`${REACT_APP_APIURL}/projects/${projectId}`);
-      console.log('response', response);
-      const { err, data } = response.data;
+      const { err } = response.data;
       if (err === 0) {
         toast.success('Project deleted successfully');
         return true;
       }
     }
   } catch (error) {
-    console.log('error', error);
-    toast.error('Something went wrong, Please try again later');
+    toastError();
     return false;
   } finally {
     dispatch(setLoading(false));
   }
+};
+
+const toastError = () => {
+  toast.error('Something went wrong, Please try again later');
 };

@@ -12,7 +12,12 @@ import {
   Typography,
 } from '@mui/material';
 import { blue, grey } from '@mui/material/colors';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 import CustomTextField from 'src/components/forms/theme-elements/CustomTextField';
+import { useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { createProject, updateProject } from 'src/Services/projectServices';
 
 const StyledTextarea = styled(TextareaAutosize)(
   ({ theme }) => `
@@ -44,21 +49,44 @@ const StyledTextarea = styled(TextareaAutosize)(
   `,
 );
 
-const ProjectModal = ({
-  open,
-  handleClose,
-  handleChange,
-  errors,
-  values,
-  handleBlur,
-  touched,
-  isNew,
-  onSubmit,
-}) => {
+const ProjectModal = ({ open, handleClose, selectedProject, loadData }) => {
+  const dispatch = useDispatch();
+
+  const { handleChange, errors, values, handleBlur, touched, resetForm } = useFormik({
+    enableReinitialize: true,
+    initialValues: {
+      title: selectedProject?.title || '',
+      description: selectedProject?.description || '',
+      is_active: selectedProject?.is_active ? true : false,
+    },
+    validationSchema: Yup.object({
+      title: Yup.string().required('Required'),
+      description: Yup.string().required('Required'),
+    }),
+  });
+
+  const onClose = () => {
+    handleClose();
+    resetForm();
+  };
+
+  const onSubmit = useCallback(
+    async (v) => {
+      let res;
+      if (selectedProject?._id) res = await dispatch(updateProject(v, selectedProject?._id));
+      else res = await dispatch(createProject(v));
+      if (res) {
+        handleClose();
+        loadData();
+      }
+    },
+    [dispatch, selectedProject, loadData, handleClose],
+  );
+
   return (
     <>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>{isNew ? 'New' : 'Update'} Project</DialogTitle>
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>{selectedProject?._id ? 'Update' : 'New'} Project</DialogTitle>
         <DialogContent>
           <Stack>
             <Box>
@@ -136,8 +164,10 @@ const ProjectModal = ({
           </Stack>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={() => onSubmit(values)}>{isNew ? 'Create' : 'Update'}</Button>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button onClick={() => onSubmit(values)}>
+            {selectedProject?._id ? 'Update' : 'Create'}
+          </Button>
         </DialogActions>
       </Dialog>
     </>

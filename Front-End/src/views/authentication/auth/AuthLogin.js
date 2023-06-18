@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, FormGroup, Button, Stack } from '@mui/material';
+import { Box, Typography, FormGroup, Stack } from '@mui/material';
 import { Link } from 'react-router-dom';
 
 import CustomTextField from '../../../components/forms/theme-elements/CustomTextField';
