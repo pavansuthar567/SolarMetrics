@@ -7,10 +7,9 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { setupToken } from './routes/AuthTokenHelper';
+import '../src/App.css';
 
-// const Token =
 setupToken();
-// console.log('Token', Token);
 
 function App() {
   const routing = useRoutes(Router);

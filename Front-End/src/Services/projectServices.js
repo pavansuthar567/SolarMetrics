@@ -2,7 +2,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { REACT_APP_APIURL } from 'src/Environment';
 import { setLoading } from 'src/Store/Reducers/AuthSlice';
-import { setProjectList } from 'src/Store/Reducers/projectSlice';
+import { setProjectList, setSelectedProject } from 'src/Store/Reducers/projectSlice';
 
 export const getProjectList = () => async (dispatch) => {
   try {
@@ -66,6 +66,25 @@ export const deleteProduct = (projectId) => async (dispatch) => {
       const { err } = response.data;
       if (err === 0) {
         toast.success('Project deleted successfully');
+        return true;
+      }
+    }
+  } catch (error) {
+    toastError();
+    return false;
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+export const getProject = (projectId) => async (dispatch) => {
+  try {
+    if (projectId) {
+      dispatch(setLoading(true));
+      const response = await axios.get(`${REACT_APP_APIURL}/projects/${projectId}`);
+      const { err, data } = response.data;
+      if (err === 0) {
+        dispatch(setSelectedProject(data));
         return true;
       }
     }
