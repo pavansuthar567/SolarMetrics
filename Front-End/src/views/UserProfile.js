@@ -11,7 +11,7 @@ import * as Yup from 'yup';
 const UserProfile = () => {
   const dispatch = useDispatch();
 
-  const { loading, user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.auth);
 
   const loadData = useCallback(async () => {
     await dispatch(getProfile());

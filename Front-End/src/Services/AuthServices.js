@@ -1,5 +1,5 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+// import jwtDecode from 'jwt-decode';
 import { toast } from 'react-toastify';
 import { REACT_APP_APIURL } from 'src/Environment';
 import { setLoading, setUserProfile } from 'src/Store/Reducers/AuthSlice';
@@ -7,7 +7,7 @@ import { clearToken, saveToken } from 'src/routes/AuthTokenHelper';
 
 export const setLoginToken = (access_Token) => {
   saveToken(access_Token);
-  const decoded = jwtDecode(access_Token);
+  // const decoded = jwtDecode(access_Token);
 };
 
 export const login = (payload) => async (dispatch) => {
@@ -15,7 +15,7 @@ export const login = (payload) => async (dispatch) => {
     if (payload) {
       dispatch(setLoading(true));
       const response = await axios.post(`${REACT_APP_APIURL}/login`, payload);
-      const { data, err, msg } = response.data;
+      const { data, err } = response.data;
       if (err === 0) {
         setLoginToken(data?.Token);
         return data;
@@ -35,7 +35,7 @@ export const signup = (payload) => async (dispatch) => {
     if (payload) {
       dispatch(setLoading(true));
       const response = await axios.post(`${REACT_APP_APIURL}/signup`, payload);
-      const { data, err, msg } = response.data;
+      const { data, err } = response.data;
       if (err === 0) {
         setLoginToken(data?.Token);
         return data;

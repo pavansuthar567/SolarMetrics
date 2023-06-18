@@ -15,27 +15,27 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  createProject,
-  deleteProduct,
-  getProjectList,
-  updateProject,
-} from 'src/Services/projectServices';
+import { deleteProduct, getProjectList } from 'src/Services/projectServices';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CreateIcon from '@mui/icons-material/Create';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { green, red } from '@mui/material/colors';
+import PreviewIcon from '@mui/icons-material/Preview';
+import { amber, green, red } from '@mui/material/colors';
 import ProjectModal from './ProjectModal';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
 import { setSelectedProject } from 'src/Store/Reducers/projectSlice';
+import { useNavigate } from 'react-router';
+
+const newItem = {
+  title: '',
+  description: '',
+  is_active: true,
+};
 
 const Project = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [isNew, setIsNew] = useState(true);
-  const [selectedProjectId, setSelectedProjectId] = useState();
   const open = Boolean(anchorEl);
 
   const dispatch = useDispatch();
@@ -50,76 +50,33 @@ const Project = () => {
     loadData();
   }, []);
 
-  const handleClick = (event, id) => {
-    if (id) {
-      setSelectedProjectId(id);
-      setIsNew(false);
-      const item = projectList?.filter((x) => x?._id === id);
-      dispatch(setSelectedProject(item?.[0]));
-    }
+  const onOpenMenu = (event, item) => {
     setAnchorEl(event.currentTarget);
+    if (item) dispatch(setSelectedProject(item));
   };
 
-  const handleClose = () => {
+  const onCloseMenu = (cleanItemId = true) => {
     setAnchorEl(null);
+    if (cleanItemId) dispatch(setSelectedProject(newItem));
   };
 
-  const handleOpenDialog = () => {
+  const onOpenModal = () => {
     setOpenDialog(true);
-    handleClose();
+    onCloseMenu(false);
   };
 
-  const handleCloseDialog = () => {
+  const onCloseModal = () => {
     setOpenDialog(false);
-    setSelectedProjectId();
-    dispatch(
-      setSelectedProject({
-        name: '',
-        description: '',
-        is_active: true,
-      }),
-    );
+    dispatch(setSelectedProject(newItem));
   };
-
-  const { handleChange, errors, values, handleBlur, touched } = useFormik({
-    enableReinitialize: true,
-    initialValues: {
-      title: selectedProject?.title || '',
-      description: selectedProject?.description || '',
-      is_active: selectedProject?.is_active ? true : false,
-    },
-    validationSchema: Yup.object({
-      title: Yup.string().required('Required'),
-      description: Yup.string().required('Required'),
-    }),
-  });
-
-  const onSubmit = useCallback(async (v) => {
-    let res;
-    if (isNew) res = await dispatch(createProject(v));
-    else res = await dispatch(updateProject(v, selectedProjectId));
-    if (res) {
-      loadData();
-      handleCloseDialog();
-    }
-  }, []);
 
   const onDelete = useCallback(async (id) => {
-    console.log('id', id);
     if (id) {
+      onCloseMenu();
       const res = await dispatch(deleteProduct(id));
       if (res) {
+        dispatch(setSelectedProject(newItem));
         loadData();
-        handleClose();
-        setSelectedProjectId();
-        setIsNew(true);
-        dispatch(
-          setSelectedProject({
-            name: '',
-            description: '',
-            is_active: true,
-          }),
-        );
       }
     }
   }, []);
@@ -135,14 +92,14 @@ const Project = () => {
               variant="contained"
               size="large"
               fullWidth
-              onClick={handleOpenDialog}
+              onClick={onOpenModal}
             >
               Add Project
             </Button>
           </Box>
         }
       >
-        {loading ? (
+        {loading && projectList?.length === 0 ? (
           <CircularProgress />
         ) : (
           <Box sx={{ overflow: 'auto', width: { xs: '280px', sm: 'auto' } }}>
@@ -185,7 +142,7 @@ const Project = () => {
               <TableBody>
                 {projectList?.map((x, i) => {
                   return (
-                    <TableRow key={x?._id}>
+                    <TableRow key={i}>
                       <TableCell>
                         <Typography
                           sx={{
@@ -222,7 +179,7 @@ const Project = () => {
                         <IconButton
                           aria-label="delete"
                           size="small"
-                          onClick={(e) => handleClick(e, x._id)}
+                          onClick={(e) => onOpenMenu(e, x)}
                         >
                           <MoreHorizIcon />
                         </IconButton>
@@ -239,18 +196,32 @@ const Project = () => {
         id="basic-menu"
         anchorEl={anchorEl}
         open={open}
-        onClose={handleClose}
+        onClose={onCloseMenu}
         MenuListProps={{
           'aria-labelledby': 'basic-button',
         }}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
       >
-        <MenuItem onClick={handleOpenDialog}>
+        <MenuItem onClick={() => navigate(`/projects/${selectedProject?._id}`)}>
+          <IconButton aria-label="delete" size="small">
+            <PreviewIcon sx={{ color: amber[500] }} />
+          </IconButton>
+          View
+        </MenuItem>
+        <MenuItem onClick={onOpenModal}>
           <IconButton aria-label="delete" size="small">
             <CreateIcon sx={{ color: green[500] }} />
           </IconButton>
           Edit
         </MenuItem>
-        <MenuItem onClick={() => onDelete(selectedProjectId)}>
+        <MenuItem onClick={() => onDelete(selectedProject?._id)}>
           <IconButton aria-label="delete" size="small">
             <DeleteIcon sx={{ color: red[500] }} />
           </IconButton>
@@ -259,14 +230,9 @@ const Project = () => {
       </Menu>
       <ProjectModal
         open={openDialog}
-        values={values}
-        errors={errors}
-        isNew={isNew}
-        touched={touched}
-        handleClose={handleCloseDialog}
-        handleChange={handleChange}
-        handleBlur={handleBlur}
-        onSubmit={onSubmit}
+        selectedProject={selectedProject}
+        handleClose={onCloseModal}
+        loadData={loadData}
       />
     </>
   );

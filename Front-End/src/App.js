@@ -8,8 +8,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from 'axios';
 import { setupToken } from './routes/AuthTokenHelper';
 
-const Token = setupToken();
-console.log('Token', Token);
+// const Token =
+setupToken();
+// console.log('Token', Token);
 
 function App() {
   const routing = useRoutes(Router);
@@ -20,14 +21,12 @@ function App() {
       return response;
     },
     (error) => {
-      console.log(error);
       const { status } = error?.response?.data || {};
       console.log('error?.response', error?.response);
-      console.log('status', status);
-      // if (status === 401) {
-      //   localStorage.removeItem('UserPreferences');
-      //   window.location.href = '/auth/login';
-      // }
+      if (status === 401) {
+        localStorage.removeItem('UserPreferences');
+        window.location.href = '/auth/login';
+      }
       return Promise.reject(error);
     },
   );

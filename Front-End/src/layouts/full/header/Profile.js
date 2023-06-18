@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   Box,
@@ -11,10 +11,10 @@ import {
   ListItemText,
 } from '@mui/material';
 
-import { IconListCheck, IconMail, IconUser } from '@tabler/icons';
+import { IconUser } from '@tabler/icons';
 
 import ProfileImg from 'src/assets/images/profile/user-1.jpg';
-import { getProfile, logout } from 'src/Services/AuthServices';
+import { logout } from 'src/Services/AuthServices';
 import { useDispatch } from 'react-redux';
 
 const Profile = () => {
