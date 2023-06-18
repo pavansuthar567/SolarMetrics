@@ -1,3 +1,13 @@
+const { param, body, header } = require("express-validator");
+
+const getParamContainer = (id, containerId) => {
+  return containerId === "param"
+    ? param(id)
+    : containerId === "body"
+    ? body(id)
+    : header(id);
+};
+
 module.exports = {
   errorValidationResponse: function (data) {
     console.log("data", data);
@@ -8,6 +18,25 @@ module.exports = {
       msg: "Please Enter All Fields",
     };
     return sendData;
+  },
+  isMongoId: function (id, containerId) {
+    const container = getParamContainer(id, containerId);
+    return container
+      .not()
+      .isEmpty()
+      .trim()
+      .isLength({
+        min: 24,
+      })
+      .withMessage(`Please provide a valid ${id}`);
+  },
+  isString: function (id, containerId) {
+    const container = getParamContainer(id, containerId);
+    return container.not().isEmpty().trim();
+  },
+  isNumber: function (id, containerId) {
+    const container = getParamContainer(id, containerId);
+    return container.not().isEmpty().trim().isNumeric();
   },
   getSendData: () => {
     return {
