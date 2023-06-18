@@ -1,0 +1,54 @@
+.map {
+  width: calc(100vw- 300px);
+  height: 600px;
+  border-radius: 5px;
+}
+.gm-style .gm-style-iw-c {
+  padding-right: 10px !important;
+  padding-bottom: 0px !important;
+  max-width: 200px !important;
+  max-height: 326px !important;
+  min-width: 0px !important;
+  position: absolute;
+  box-sizing: border-box;
+  overflow: hidden;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -100%);
+  /* background-color: #dd9191; */
+  border-radius: 8px;
+  /* box-shadow: 0 2px 7px 1px rgba(0, 0, 0, 0.3); */
+}
+/*******************************/
+.gm-style .gm-style-iw-tc {
+  display: none !important;
+}
+/* #map-canvas {
+  margin: 0;
+  padding: 0;
+  height: 400px;
+  max-width: none;
+} */
+
+.gm-style-iw {
+  top: 15px !important;
+  left: 0px !important;
+  background-color: #fff;
+  box-shadow: 0 0px 0px rgba(255, 255, 255, 1);
+  border-radius: 2px 2px 10px 10px;
+}
+
+#iw-container .iw-title {
+  font-weight: 400;
+  margin: 0;
+  border-radius: 2px 2px 0 0;
+}
+
+.css-nun4qe-MuiButtonBase-root-MuiIconButton-root {
+  padding: 0 !important;
+}
+.css-1145ie3-MuiSvgIcon-root,
+.css-dwhdbl-MuiSvgIcon-root {
+  width: 0.8em !important;
+  height: 0.8em !important;
+}

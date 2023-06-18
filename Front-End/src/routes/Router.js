@@ -45,7 +45,7 @@ const Router = [
         ),
       },
       {
-        path: '/projects/:project',
+        path: '/projects/:projectId',
         exact: true,
         element: (
           <ProtectedRoutes>
