@@ -25,7 +25,6 @@ const ProductModal = ({
 }) => {
   const dispatch = useDispatch();
   const { selectedProduct } = useSelector((state) => state.product);
-  console.log('selectedProject', selectedProject);
 
   const { handleChange, errors, values, handleBlur, touched, resetForm } = useFormik({
     enableReinitialize: true,
@@ -52,6 +51,7 @@ const ProductModal = ({
   const onSubmit = useCallback(
     async (v) => {
       let res;
+      console.log('selectedProduct', selectedProduct);
       if (selectedProduct?._id)
         res = await dispatch(updateProduct(v, selectedProject?._id, selectedProduct?._id));
       else res = await dispatch(createProduct(v, selectedProject?._id));
@@ -62,7 +62,6 @@ const ProductModal = ({
     },
     [dispatch, selectedProduct, loadData, handleClose],
   );
-  console.log('values', values);
   return (
     <>
       <Dialog open={open} onClose={onClose}>

@@ -18,7 +18,7 @@ const ProjectOverView = () => {
 
   const loadData = useCallback(async () => {
     await dispatch(getProject(projectId));
-    await dispatch(getProductList());
+    await dispatch(getProductList(projectId));
   }, [projectId]);
 
   useEffect(() => {

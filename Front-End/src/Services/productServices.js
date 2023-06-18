@@ -8,14 +8,16 @@ const toastError = () => {
   toast.error('Something went wrong, Please try again later');
 };
 
-export const getProductList = () => async (dispatch) => {
+export const getProductList = (project_id) => async (dispatch) => {
   try {
-    dispatch(setLoading(true));
-    const response = await axios.get(`${REACT_APP_APIURL}/products`);
-    const { err, data } = response.data;
-    if (err === 0) {
-      dispatch(setProductList(data || []));
-      return true;
+    if (project_id) {
+      dispatch(setLoading(true));
+      const response = await axios.get(`${REACT_APP_APIURL}/projects/${project_id}/products`);
+      const { err, data } = response.data;
+      if (err === 0) {
+        dispatch(setProductList(data || []));
+        return true;
+      }
     }
   } catch (error) {
     toastError();
@@ -25,9 +27,9 @@ export const getProductList = () => async (dispatch) => {
   }
 };
 
-export const updateProduct = (payload, project_id) => async (dispatch) => {
+export const updateProduct = (payload, project_id, product_id) => async (dispatch) => {
   try {
-    if (payload) {
+    if (payload && project_id && product_id) {
       dispatch(setLoading(true));
       const response = await axios.put(`${REACT_APP_APIURL}/projects/${project_id}/products`);
       const { err, data } = response.data;
@@ -47,15 +49,21 @@ export const updateProduct = (payload, project_id) => async (dispatch) => {
 };
 
 export const createProduct = (payload, project_id) => async (dispatch) => {
+  console.log('payload, project_id', payload, project_id);
   try {
     if (payload && project_id) {
-      console.log('project_id', project_id);
+      console.log('createProduct');
       dispatch(setLoading(true));
-      const response = await axios.post(`${REACT_APP_APIURL}/projects/${project_id}/products`);
-      const { err, data } = response.data;
+      const response = await axios.post(
+        `${REACT_APP_APIURL}/projects/${project_id}/products`,
+        payload,
+      );
+      const { err, data, msg } = response.data;
       if (err === 0) {
         toast.success('Product created successfully!');
         return true;
+      } else if (err === 1) {
+        toast.error(msg);
       }
     } else {
       toast.error('Please fill up valid details.');
