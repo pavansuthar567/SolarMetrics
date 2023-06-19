@@ -6,6 +6,7 @@ import DashboardCard from 'src/components/shared/DashboardCard';
 import Map from '../Map/map';
 import { getProductList } from 'src/Services/productServices';
 import ProductModal from './ProductModal';
+import { setSelectedProduct } from 'src/Store/Reducers/productSlice';
 
 const ProjectOverView = () => {
   const { projectId } = useParams();
@@ -30,9 +31,9 @@ const ProjectOverView = () => {
     //   dispatch(setSelectedProject(newItem));
   }, []);
 
-  const onOpenProductModal = useCallback((e) => {
+  const onOpenProductModal = useCallback((e, product) => {
+    if (product) dispatch(setSelectedProduct(product));
     setAnchorEl(e.currentTarget);
-    //   dispatch(setSelectedProject(newItem));
   }, []);
 
   return (

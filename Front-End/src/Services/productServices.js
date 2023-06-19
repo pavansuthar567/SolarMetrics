@@ -31,14 +31,17 @@ export const updateProduct = (payload, project_id, product_id) => async (dispatc
   try {
     if (payload && project_id && product_id) {
       dispatch(setLoading(true));
-      const response = await axios.put(`${REACT_APP_APIURL}/projects/${project_id}/products`);
-      const { err, data } = response.data;
+      const response = await axios.put(
+        `${REACT_APP_APIURL}/projects/${project_id}/products/${product_id}`,
+      );
+      const { err, data, msg } = response.data;
       if (err === 0) {
         toast.success('Product updated successfully!');
         return true;
+      } else if (err === 1) {
+        toast.error(msg);
+        return false;
       }
-    } else {
-      toast.error('Please fill up valid details.');
     }
   } catch (error) {
     toastError();

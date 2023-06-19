@@ -68,7 +68,12 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
             {(clusterer) =>
               productList?.map((x, i) => {
                 return (
-                  <Marker key={i} position={{ lat: x?.lat, lng: x?.lng }} clusterer={clusterer}>
+                  <Marker
+                    key={i}
+                    position={{ lat: x?.lat, lng: x?.lng }}
+                    clusterer={clusterer}
+                    draggable
+                  >
                     <InfoWindow
                       options={{
                         pane: 'overlayLayer',
@@ -89,7 +94,11 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
                         <div>Orientation: {x?.orientation ? x?.orientation : 0}</div>
                         <div>Inclination: {x?.inclination ? x?.inclination : 0}</div>
                         <div style={{ marginTop: '5px' }}>
-                          <IconButton aria-label="delete" sx={{ marginRight: '5px', padding: '0' }}>
+                          <IconButton
+                            aria-label="delete"
+                            sx={{ marginRight: '5px', padding: '0' }}
+                            onClick={(e) => onOpenProductModal(e, x)}
+                          >
                             <CreateIcon sx={{ color: green[500] }} />
                           </IconButton>
                           <IconButton aria-label="delete">

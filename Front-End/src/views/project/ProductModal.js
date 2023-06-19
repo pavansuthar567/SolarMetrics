@@ -30,8 +30,8 @@ const ProductModal = ({
     enableReinitialize: true,
     initialValues: {
       title: selectedProduct?.title || '',
-      lat: selectedProduct?.title || selectedCoord?.lat || '',
-      lng: selectedProduct?.title || selectedCoord?.lng || '',
+      lat: selectedProduct?.lat || selectedCoord?.lat || '',
+      lng: selectedProduct?.lng || selectedCoord?.lng || '',
       orientation: selectedProduct?.orientation || '',
       inclination: selectedProduct?.inclination || '',
       power_peak_in_watt: selectedProduct?.power_peak_in_watt || '',
@@ -58,9 +58,10 @@ const ProductModal = ({
       if (res) {
         handleClose();
         loadData();
+        setSelectedCoord();
       }
     },
-    [dispatch, selectedProduct, loadData, handleClose],
+    [dispatch, selectedProduct, loadData, handleClose, selectedProject],
   );
   return (
     <>
@@ -158,6 +159,7 @@ const ProductModal = ({
                 </Typography>
                 <CustomTextField
                   id="name"
+                  // InputProps={{ inputProps: { min: 0, max: 3 } }}
                   type="number"
                   variant="outlined"
                   fullWidth
