@@ -4,8 +4,9 @@ import { useParams } from 'react-router';
 import { getProject } from 'src/Services/projectServices';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import Map from '../Map/map';
-import { getProductList } from 'src/Services/productServices';
+import { deleteProduct, getProductList } from 'src/Services/productServices';
 import ProductModal from './ProductModal';
+import { setSelectedProduct } from 'src/Store/Reducers/productSlice';
 
 const ProjectOverView = () => {
   const { projectId } = useParams();
@@ -27,13 +28,26 @@ const ProjectOverView = () => {
 
   const onCloseModal = useCallback(() => {
     setAnchorEl(null);
-    //   dispatch(setSelectedProject(newItem));
+    dispatch(setSelectedProduct({}));
   }, []);
 
-  const onOpenProductModal = useCallback((e) => {
+  const onOpenProductModal = useCallback((e, product) => {
+    if (product) dispatch(setSelectedProduct(product));
     setAnchorEl(e.currentTarget);
-    //   dispatch(setSelectedProject(newItem));
   }, []);
+
+  const onDelete = useCallback(
+    async (product) => {
+      if (product?._id && selectedProject?._id) {
+        const res = await dispatch(deleteProduct(selectedProject?._id, product?._id));
+
+        if (res) {
+          loadData();
+        }
+      }
+    },
+    [selectedProject?._id],
+  );
 
   return (
     <>
@@ -42,6 +56,7 @@ const ProjectOverView = () => {
           onOpenProductModal={onOpenProductModal}
           setSelectedCoord={setSelectedCoord}
           selectedCoord={selectedCoord}
+          onDelete={onDelete}
         />
       </DashboardCard>
       <ProductModal
