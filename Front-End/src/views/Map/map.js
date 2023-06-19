@@ -35,16 +35,18 @@ export const defaultMapOptions = {
 
 // Working Map
 
-const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
+const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) => {
   const dispatch = useDispatch();
+  const mapRef = useRef();
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: `${REACT_APP_GOOGLE_MAP_API_KEY}`,
   });
 
-  const mapRef = useRef();
   const onLoad = useCallback((map) => (mapRef.current = map), []);
   const { productList } = useSelector((state) => state.product);
+
+  const [activeMarker, setActiveMarker] = useState();
 
   const onClickMap = useCallback(
     (lat, lng) => {
@@ -52,6 +54,14 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
     },
     [dispatch],
   );
+
+  const handleActiveMarker = useCallback((id) => {
+    setActiveMarker(id);
+  }, []);
+
+  const onCloseInfoWindow = useCallback(() => {
+    setActiveMarker();
+  }, []);
 
   const map = useMemo(() => {
     if (isLoaded)
@@ -68,36 +78,49 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
             {(clusterer) =>
               productList?.map((x, i) => {
                 return (
-                  <Marker key={i} position={{ lat: x?.lat, lng: x?.lng }} clusterer={clusterer}>
-                    <InfoWindow
-                      options={{
-                        pane: 'overlayLayer',
-                        pixelOffset: new window.google.maps.Size(0, -50),
-                        alignBottom: true,
-                        boxStyle: {
-                          boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`,
-                        },
-                      }}
-                      position={{ lat: x?.lat, lng: x?.lng }}
-                    >
-                      <div id="iw-container">
-                        <div className="iw-title">{x?.title}</div>
-                        <div>
-                          Power Peak: {x?.power_peak_in_watt ? x?.power_peak_in_watt : 0} (watt)
+                  <Marker
+                    key={i}
+                    position={{ lat: x?.lat, lng: x?.lng }}
+                    clusterer={clusterer}
+                    draggable
+                    onClick={() => handleActiveMarker(x?._id)}
+                  >
+                    {activeMarker === x?._id ? (
+                      <InfoWindow
+                        onCloseClick={() => onCloseInfoWindow()}
+                        options={{
+                          pane: 'overlayLayer',
+                          pixelOffset: { width: 0, height: -10 },
+                          alignBottom: true,
+                          boxStyle: {
+                            boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`,
+                          },
+                        }}
+                        position={{ lat: x?.lat, lng: x?.lng }}
+                      >
+                        <div id="iw-container">
+                          <div className="iw-title">{x?.title}</div>
+                          <div>
+                            Power Peak: {x?.power_peak_in_watt ? x?.power_peak_in_watt : 0} (watt)
+                          </div>
+                          <div>Area Sm : {x?.area_sm ? x?.area_sm : 0}</div>
+                          <div>Orientation: {x?.orientation ? x?.orientation : 0}</div>
+                          <div>Inclination: {x?.inclination ? x?.inclination : 0}</div>
+                          <div style={{ marginTop: '5px' }}>
+                            <IconButton
+                              aria-label="delete"
+                              sx={{ marginRight: '5px', padding: '0' }}
+                              onClick={(e) => onOpenProductModal(e, x)}
+                            >
+                              <CreateIcon sx={{ color: green[500] }} />
+                            </IconButton>
+                            <IconButton aria-label="delete" onClick={() => onDelete(x)}>
+                              <DeleteIcon sx={{ color: red[500] }} />
+                            </IconButton>
+                          </div>
                         </div>
-                        <div>Area Sm : {x?.area_sm ? x?.area_sm : 0}</div>
-                        <div>Orientation: {x?.orientation ? x?.orientation : 0}</div>
-                        <div>Inclination: {x?.inclination ? x?.inclination : 0}</div>
-                        <div style={{ marginTop: '5px' }}>
-                          <IconButton aria-label="delete" sx={{ marginRight: '5px', padding: '0' }}>
-                            <CreateIcon sx={{ color: green[500] }} />
-                          </IconButton>
-                          <IconButton aria-label="delete">
-                            <DeleteIcon sx={{ color: red[500] }} />
-                          </IconButton>
-                        </div>
-                      </div>
-                    </InfoWindow>
+                      </InfoWindow>
+                    ) : null}
                   </Marker>
                 );
               })
@@ -105,31 +128,33 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord }) => {
           </MarkerClusterer>
           {selectedCoord?.lat ? (
             <Marker position={selectedCoord}>
-              <InfoWindow
-                options={{
-                  maxWidth: 10,
-                  pane: 'overlayLayer',
-                  pixelOffset: new window.google.maps.Size(0, -50),
-                  alignBottom: true,
-                  boxStyle: {
-                    boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`,
-                  },
-                }}
-                position={selectedCoord}
-              >
-                <IconButton
-                  aria-label="Create"
-                  sx={{ padding: 0, paddingLeft: '15px' }}
-                  onClick={onOpenProductModal}
+              {!activeMarker ? (
+                <InfoWindow
+                  options={{
+                    maxWidth: 10,
+                    pane: 'overlayLayer',
+                    pixelOffset: { width: 0, height: -10 },
+                    alignBottom: true,
+                    boxStyle: {
+                      boxShadow: `3px 3px 10px rgba(0,0,0,0.6)`,
+                    },
+                  }}
+                  position={selectedCoord}
                 >
-                  <AddCircleIcon sx={{ color: blue[500] }} />
-                </IconButton>
-              </InfoWindow>
+                  <IconButton
+                    aria-label="Create"
+                    sx={{ padding: 0, paddingLeft: '15px' }}
+                    onClick={onOpenProductModal}
+                  >
+                    <AddCircleIcon sx={{ color: blue[500] }} />
+                  </IconButton>
+                </InfoWindow>
+              ) : null}
             </Marker>
           ) : null}
         </GoogleMap>
       );
-  }, [isLoaded, onClickMap, onLoad, productList, selectedCoord]);
+  }, [isLoaded, onClickMap, onLoad, productList, activeMarker, selectedCoord]);
 
   return <>{map}</>;
 };

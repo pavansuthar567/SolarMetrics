@@ -28,7 +28,7 @@ module.exports = {
 
   UPDATE_PRODUCT: async function (data, callback) {
     let sendData = getErrorSendData();
-    const { product_id, user_id, orientation } = data || {};
+    const { product_id, project_id, user_id, orientation } = data || {};
 
     try {
       if (orientation > 3) {
@@ -47,7 +47,7 @@ module.exports = {
       }
 
       data.user_id = new ObjectId(user_id);
-      data.project_id = new ObjectId(project_id);
+      data.project_id = product.project_id;
       data.updated_at = new Date();
       data.is_default = false;
       await productModal.updateOne(cond, data);

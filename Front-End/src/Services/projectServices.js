@@ -58,7 +58,7 @@ export const updateProject = (payload, projectId) => async (dispatch) => {
   }
 };
 
-export const deleteProduct = (projectId) => async (dispatch) => {
+export const deleteProject = (projectId) => async (dispatch) => {
   try {
     if (projectId) {
       dispatch(setLoading(true));
