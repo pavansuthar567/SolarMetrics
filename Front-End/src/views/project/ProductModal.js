@@ -51,7 +51,6 @@ const ProductModal = ({
   const onSubmit = useCallback(
     async (v) => {
       let res;
-      console.log('selectedProduct', selectedProduct);
       if (selectedProduct?._id)
         res = await dispatch(updateProduct(v, selectedProject?._id, selectedProduct?._id));
       else res = await dispatch(createProduct(v, selectedProject?._id));
@@ -63,6 +62,7 @@ const ProductModal = ({
     },
     [dispatch, selectedProduct, loadData, handleClose, selectedProject],
   );
+
   return (
     <>
       <Dialog open={open} onClose={onClose}>

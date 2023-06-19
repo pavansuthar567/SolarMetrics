@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteProduct, getProjectList } from 'src/Services/projectServices';
+import { deleteProject, getProjectList } from 'src/Services/projectServices';
 import DashboardCard from 'src/components/shared/DashboardCard';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import CreateIcon from '@mui/icons-material/Create';
@@ -73,7 +73,7 @@ const Project = () => {
   const onDelete = useCallback(async (id) => {
     if (id) {
       onCloseMenu();
-      const res = await dispatch(deleteProduct(id));
+      const res = await dispatch(deleteProject(id));
       if (res) {
         dispatch(setSelectedProject(newItem));
         loadData();
