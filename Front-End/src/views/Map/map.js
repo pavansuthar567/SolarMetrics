@@ -47,6 +47,7 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) 
   const { productList } = useSelector((state) => state.product);
 
   const [activeMarker, setActiveMarker] = useState();
+  const [infoWindowOpen, setInfoWindowOpen] = useState(false);
 
   const onClickMap = useCallback(
     (lat, lng) => {
@@ -61,6 +62,14 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) 
 
   const onCloseInfoWindow = useCallback(() => {
     setActiveMarker();
+  }, []);
+
+  const handleInfoWindowToggle = useCallback(() => {
+    setInfoWindowOpen((prev) => !prev);
+  }, []);
+
+  const onCloseInfoWindowToggle = useCallback(() => {
+    setInfoWindowOpen(false);
   }, []);
 
   const map = useMemo(() => {
@@ -127,8 +136,8 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) 
             }
           </MarkerClusterer>
           {selectedCoord?.lat ? (
-            <Marker position={selectedCoord}>
-              {!activeMarker ? (
+            <Marker position={selectedCoord} onClick={handleInfoWindowToggle}>
+              {infoWindowOpen && (
                 <InfoWindow
                   options={{
                     maxWidth: 10,
@@ -140,6 +149,7 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) 
                     },
                   }}
                   position={selectedCoord}
+                  onCloseClick={onCloseInfoWindowToggle}
                 >
                   <IconButton
                     aria-label="Create"
@@ -149,12 +159,12 @@ const Map = ({ onOpenProductModal, setSelectedCoord, selectedCoord, onDelete }) 
                     <AddCircleIcon sx={{ color: blue[500] }} />
                   </IconButton>
                 </InfoWindow>
-              ) : null}
+              )}
             </Marker>
           ) : null}
         </GoogleMap>
       );
-  }, [isLoaded, onClickMap, onLoad, productList, activeMarker, selectedCoord]);
+  }, [isLoaded, onClickMap, onLoad, productList, activeMarker, infoWindowOpen, selectedCoord]);
 
   return <>{map}</>;
 };

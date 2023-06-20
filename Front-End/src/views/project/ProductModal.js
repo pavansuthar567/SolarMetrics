@@ -5,6 +5,8 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  MenuItem,
+  Select,
   Stack,
   Typography,
 } from '@mui/material';
@@ -62,6 +64,7 @@ const ProductModal = ({
     },
     [dispatch, selectedProduct, loadData, handleClose, selectedProject],
   );
+  console.log('values', values);
 
   return (
     <>
@@ -157,17 +160,22 @@ const ProductModal = ({
                 <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="name">
                   Orientation
                 </Typography>
-                <CustomTextField
+                <Select
+                  labelId="demo-simple-select-label"
                   id="name"
-                  // InputProps={{ inputProps: { min: 0, max: 3 } }}
-                  type="number"
                   variant="outlined"
                   fullWidth
+                  defaultValue={0}
                   name="orientation"
+                  value={values?.orientation || ''}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values?.orientation || ''}
-                />
+                >
+                  <MenuItem value={0}>North</MenuItem>
+                  <MenuItem value={1}>East</MenuItem>
+                  <MenuItem value={2}>South</MenuItem>
+                  <MenuItem value={3}>West</MenuItem>
+                </Select>
                 {errors?.orientation && touched?.orientation && (
                   <p style={{ marginBottom: 0, marginTop: 0, color: 'red' }}>
                     {errors?.orientation}
