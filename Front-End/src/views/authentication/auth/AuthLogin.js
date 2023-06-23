@@ -78,7 +78,7 @@ const AuthLogin = ({
         <FormGroup>
           {/* <FormControlLabel control={<Checkbox defaultChecked />} label="Remeber this Device" /> */}
         </FormGroup>
-        <Typography
+        {/* <Typography
           component={Link}
           to="/"
           fontWeight="500"
@@ -88,7 +88,7 @@ const AuthLogin = ({
           }}
         >
           Forgot Password ?
-        </Typography>
+        </Typography> */}
       </Stack>
     </Stack>
     <Box>
@@ -111,7 +111,7 @@ const AuthLogin = ({
         type="submit"
         onClick={onSubmit}
       >
-        Save
+        Sign In
       </LoadingButton>
     </Box>
     {subtitle}

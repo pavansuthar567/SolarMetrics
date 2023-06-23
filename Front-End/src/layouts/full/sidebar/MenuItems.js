@@ -31,18 +31,18 @@ const Menuitems = [
   //   navlabel: true,
   //   subheader: 'Utilities',
   // },
-  {
-    id: uniqueId(),
-    title: 'Typography',
-    icon: IconTypography,
-    href: '/ui/typography',
-  },
-  {
-    id: uniqueId(),
-    title: 'Shadow',
-    icon: IconCopy,
-    href: '/ui/shadow',
-  },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Typography',
+  //   icon: IconTypography,
+  //   href: '/ui/typography',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Shadow',
+  //   icon: IconCopy,
+  //   href: '/ui/shadow',
+  // },
   // {
   //   navlabel: true,
   //   subheader: 'Auth',
@@ -59,22 +59,22 @@ const Menuitems = [
   //   icon: IconUserPlus,
   //   href: '/auth/register',
   // },
-  {
-    navlabel: true,
-    subheader: 'Extra',
-  },
-  {
-    id: uniqueId(),
-    title: 'Icons',
-    icon: IconMoodHappy,
-    href: '/icons',
-  },
-  {
-    id: uniqueId(),
-    title: 'Sample Page',
-    icon: IconAperture,
-    href: '/sample-page',
-  },
+  // {
+  //   navlabel: true,
+  //   subheader: 'Extra',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Icons',
+  //   icon: IconMoodHappy,
+  //   href: '/icons',
+  // },
+  // {
+  //   id: uniqueId(),
+  //   title: 'Sample Page',
+  //   icon: IconAperture,
+  //   href: '/sample-page',
+  // },
 ];
 
 export default Menuitems;

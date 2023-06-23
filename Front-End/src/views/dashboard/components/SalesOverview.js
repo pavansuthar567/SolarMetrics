@@ -88,11 +88,29 @@ const SalesOverview = () => {
 
   return (
     <DashboardCard
-      title="Sales Overview"
+      title="Electricity Overview"
       action={
-        <Select labelId="month-dd" id="month-dd" value={month} size="small" onChange={handleChange}>
-          <MenuItem value={1}>March 2023</MenuItem>
-        </Select>
+        <div style={{ display: 'flex' }}>
+          <Select
+            labelId="month-dd"
+            id="month-dd"
+            value={month}
+            size="small"
+            onChange={handleChange}
+          >
+            <MenuItem value={1}>Project 1</MenuItem>
+          </Select>
+          <Select
+            style={{ marginLeft: '5px' }}
+            labelId="month-dd"
+            id="month-dd"
+            value={month}
+            size="small"
+            onChange={handleChange}
+          >
+            <MenuItem value={1}>March 2023</MenuItem>
+          </Select>
+        </div>
       }
     >
       <Chart options={optionscolumnchart} series={seriescolumnchart} type="bar" height="370px" />

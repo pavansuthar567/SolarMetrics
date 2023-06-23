@@ -59,9 +59,7 @@ function getElectricityOutput(weatherData, product) {
   const areaCoefficient = 0.01; // Adjust this coefficient based on your specific requirements
   const areaOutput = areaCoefficient * area_sm;
 
-  // Calculate the dynamic peak power based on the current hour
-  // const currentHour = new Date().getHours();
-  // const dynamicPeakPower = power_peak_in_watt * (currentHour / 24);
+  // Calculate the dynamic peak power based on the weather data
   const dynamicPeakPower = calculateDynamicPeakPower(
     power_peak_in_watt,
     weatherData
@@ -122,14 +120,8 @@ async function fetchWeatherDataAndCalculateOutput() {
 
         // Calculate electricity output
         const electricityOutput = getElectricityOutput(weatherData, product);
-        // const electricityOutput2 = getElectricityOutput2(weatherData, product);
-        // const electricityOutput3 = getElectricityOutput3(weatherData, product);
-        // const electricityOutput4 = getElectricityOutput4(weatherData, product);
 
         console.log("electricityOutput", electricityOutput);
-        // console.log("electricityOutput2", electricityOutput2);
-        // console.log("electricityOutput3", electricityOutput3);
-        // console.log("electricityOutput4", electricityOutput4);
 
         // Create a new report document
         const report = new Report({
@@ -137,9 +129,6 @@ async function fetchWeatherDataAndCalculateOutput() {
           product_id: product._id,
           date: new Date(),
           electricity_output: electricityOutput,
-          // electricity_output_2: electricityOutput2,
-          // electricity_output_3: electricityOutput3,
-          // electricity_output_4: electricityOutput4,
         });
 
         // Save the report to the database
@@ -167,6 +156,6 @@ const fetchWeatherData = async (lat, lng) => {
   }
 };
 
-// Schedule the function to fetch weather data and calculate output every hour
 // schedule.scheduleJob("*/20 * * * * *", fetchWeatherDataAndCalculateOutput); // Every 10 Seconds
+// Schedule the function to fetch weather data and calculate output every hour
 // schedule.scheduleJob("0 * * * *", fetchWeatherDataAndCalculateOutput);
