@@ -12,6 +12,7 @@ jwt = module.exports = require("jsonwebtoken");
 md5 = module.exports = require("md5");
 moment = module.exports = require("moment");
 nodemailer = module.exports = require("nodemailer");
+_ = module.exports = require("underscore");
 ejs = module.exports = require("ejs");
 ObjectId = module.exports = mongoose.mongo.ObjectId;
 const connect = require("./config/database");
@@ -91,4 +92,5 @@ require("./setting/url_setting.js");
 require("./setting/controllers_setting.js");
 
 // //all scheduled function
-require("./setting/schedule.js");
+// require("./setting/emailScheduler.js");
+require("./setting/reportScheduler.js");

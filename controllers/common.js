@@ -106,53 +106,6 @@ module.exports = {
       return { [idKey]: key, [itemsKey]: groupResult[key] };
     });
   },
-  __sendEmail: function (
-    receiver_email,
-    reply_to_email,
-    subject,
-    html,
-    email_info,
-    attachments
-  ) {
-    console.log("__sendEmail>>>>>");
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "nodezeetesting@gmail.com",
-        pass: "cgpyytpycgzjcfjw",
-      },
-    });
-    if (email_info.attachments) {
-      // let name = link.split('/').reverse()[0];
-      var mailOptions = {
-        from: "eventist<nodezeetesting@gmail.com>",
-        to: receiver_email,
-        subject: subject,
-        replyTo: reply_to_email,
-        // bcc: [
-        //     "rutvik.codezee@gmail.com",
-        //     "pavan.codezee@gmail.com"
-        // ],
-        text: email_info.email_body,
-        html: email_info.email_body,
-        attachments: attachments, // array of links
-      };
-    } else {
-      var mailOptions = {
-        from: "eventist<nodezeetesting@gmail.com>",
-        to: receiver_email,
-        subject: subject,
-        html: html,
-      };
-    }
-    transporter.sendMail(mailOptions, function (err, info) {
-      if (err) {
-        console.log("13", err);
-      } else {
-        console.log("email send:" + info.response);
-      }
-    });
-  },
   getSuccessSendData: (data = {}, msg = "") => {
     return {
       status: 200,
@@ -176,37 +129,37 @@ module.exports = {
     }
     return sendData;
   },
-  __sendEmail_other: async function (
-    sender_email,
-    receiver_email,
-    subject,
-    html
-  ) {
+  isEmail: function (email) {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  },
+
+  sendEmail: async (receiver_email, fileName, filePath) => {
     console.log("__sendEmail>>>>>");
     try {
-      // const transporter = nodemailer.createTransport({
-      //     service: 'gmail',
-      //     auth: {
-      //         user: 'collective@nakhair.com.au',
-      //         pass: 'yzvvgklvxzxlzdqo'
-      //     }
-      // });
-
       const transporter = nodemailer.createTransport({
-        host: "smtp.office365.com",
-        port: 587, // or the port provided by your email service provider
-        secure: false, // true for 465 port, false for other ports
+        host: "smtp.ethereal.email",
+        port: 587,
         auth: {
-          user: "collective@nakhair.com.au",
-          pass: "Letmework2019@",
+          user: "",
+          pass: "",
         },
       });
 
       const mailOptions = {
-        from: "Collective Nakhair <collective@nakhair.com.au>",
-        to: "rakeshthummar2012@gmail.com",
-        subject,
-        html,
+        from: "",
+        to: receiver_email,
+        subject: "Monthly Electricity Output Report",
+        text: "Please find attached the monthly electricity output report.",
+        attachments: [
+          {
+            filename: fileName,
+            path: filePath,
+          },
+        ],
       };
 
       const sendMailPromise = new Promise((resolve, reject) => {
@@ -227,12 +180,5 @@ module.exports = {
       console.log("err", err);
       return false;
     }
-  },
-  isEmail: function (email) {
-    return String(email)
-      .toLowerCase()
-      .match(
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-      );
   },
 };

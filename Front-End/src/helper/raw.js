@@ -421,3 +421,10 @@ export const countryCodes = [
   { country: 'Zambia', label: '260', value: 260, countryCode: 'ZM' },
   { country: 'Zimbabwe', label: '263', value: 263, countryCode: 'ZW' },
 ];
+
+export const PRODUCT_ORIENTATION = [
+  { key: 'North', value: 0 },
+  { key: 'East', value: 1 },
+  { key: 'South', value: 2 },
+  { key: 'West', value: 3 },
+];
