@@ -5,6 +5,7 @@ const Report = require("../modals/report/report");
 const Project = require("../modals/project/project");
 const Product = require("../modals/product/product");
 const { sendEmail, groupBy } = require("../controllers/common");
+const userModal = require("../modals/user/user");
 
 // Function to generate and send the Excel report
 async function generateAndSendReport(project) {
@@ -15,6 +16,10 @@ async function generateAndSendReport(project) {
       console.log("No products found for the project:", project.title);
       return;
     }
+
+    const user = await userModal.findOne({
+      _id: new ObjectId(project.user_id),
+    });
 
     // Create a new Excel workbook
     const workbook = new ExcelJS.Workbook();
@@ -56,7 +61,7 @@ async function generateAndSendReport(project) {
     console.log("Excel report generated successfully.");
 
     // Send the Excel file via email
-    const receiver_email = "pavan.suthar567@gmail.com";
+    const receiver_email = user.email;
     await sendEmail(receiver_email, fileName, filePath);
     console.log("Report sent successfully.");
 

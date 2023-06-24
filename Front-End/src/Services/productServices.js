@@ -8,13 +8,19 @@ const toastError = () => {
   toast.error('Something went wrong, Please try again later');
 };
 
-export const getProductList = (project_id) => async (dispatch) => {
+export const getProductList = (project_id, isAddDummy) => async (dispatch) => {
   try {
     if (project_id) {
       dispatch(setLoading(true));
       const response = await axios.get(`${REACT_APP_APIURL}/projects/${project_id}/products`);
       const { err, data } = response.data;
       if (err === 0) {
+        if (isAddDummy && data) {
+          data.unshift({
+            _id: 'select_product',
+            title: 'Select Product',
+          });
+        }
         dispatch(setProductList(data || []));
         return true;
       }
@@ -35,7 +41,7 @@ export const updateProduct = (payload, project_id, product_id) => async (dispatc
         `${REACT_APP_APIURL}/projects/${project_id}/products/${product_id}`,
         payload,
       );
-      const { err, data, msg } = response.data;
+      const { err, msg } = response.data;
       if (err === 0) {
         toast.success('Product updated successfully!');
         return true;
@@ -84,7 +90,7 @@ export const createProduct = (payload, project_id) => async (dispatch) => {
         `${REACT_APP_APIURL}/projects/${project_id}/products`,
         payload,
       );
-      const { err, data, msg } = response.data;
+      const { err, msg } = response.data;
       if (err === 0) {
         toast.success('Product created successfully!');
         return true;

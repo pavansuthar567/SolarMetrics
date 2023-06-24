@@ -1,4 +1,8 @@
 const reportSchema = new mongoose.Schema({
+  user_id: {
+    type: ObjectId,
+    required: true,
+  },
   project_id: {
     type: ObjectId,
     required: true,

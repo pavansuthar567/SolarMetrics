@@ -6,9 +6,14 @@ import PropTypes from 'prop-types';
 import Profile from './Profile';
 import { IconArrowLeft, IconMenu } from '@tabler/icons';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setSelectedProduct } from 'src/Store/Reducers/productSlice';
+import { setSelectedProject } from 'src/Store/Reducers/projectSlice';
+import { setSelectedReport } from 'src/Store/Reducers/reportSlice';
 
 const Header = (props) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
@@ -28,6 +33,14 @@ const Header = (props) => {
   }));
 
   const onClickBack = () => {
+    const rawProject = {
+      title: '',
+      description: '',
+      is_active: true,
+    };
+    dispatch(setSelectedProject(rawProject));
+    dispatch(setSelectedProduct({}));
+    dispatch(setSelectedReport({}));
     navigate(-1); // Navigates back to the previous page
   };
 
@@ -59,9 +72,9 @@ const Header = (props) => {
               color: 'primary.main',
             }),
           }}
+          onClick={onClickBack}
         >
           <Badge
-            onClick={onClickBack}
             // variant="dot"
             color="primary"
           >

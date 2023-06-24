@@ -99,6 +99,7 @@ async function fetchWeatherDataAndCalculateOutput() {
       {
         $project: {
           _id: 1,
+          user_id: 1,
           products: 1,
         },
       },
@@ -125,6 +126,7 @@ async function fetchWeatherDataAndCalculateOutput() {
 
         // Create a new report document
         const report = new Report({
+          user_id: project.user_id,
           project_id: project._id,
           product_id: product._id,
           date: new Date(),
@@ -158,4 +160,4 @@ const fetchWeatherData = async (lat, lng) => {
 
 // schedule.scheduleJob("*/20 * * * * *", fetchWeatherDataAndCalculateOutput); // Every 10 Seconds
 // Schedule the function to fetch weather data and calculate output every hour
-// schedule.scheduleJob("0 * * * *", fetchWeatherDataAndCalculateOutput);
+schedule.scheduleJob("0 * * * *", fetchWeatherDataAndCalculateOutput);

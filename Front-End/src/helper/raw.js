@@ -428,3 +428,14 @@ export const PRODUCT_ORIENTATION = [
   { key: 'South', value: 2 },
   { key: 'West', value: 3 },
 ];
+
+export const seriescolumnchart = [
+  {
+    name: 'Eanings this month',
+    data: [355, 390, 300, 350, 390, 180, 355, 390],
+  },
+  {
+    name: 'Expense this month',
+    data: [280, 250, 325, 215, 250, 310, 280, 250],
+  },
+];

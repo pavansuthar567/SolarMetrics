@@ -12,6 +12,7 @@ import {
   TableHead,
   TableRow,
   Typography,
+  Tooltip,
 } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -134,7 +135,7 @@ const Project = () => {
                   </TableCell>
                   <TableCell align="right">
                     <Typography variant="subtitle2" fontWeight={600}>
-                      Budget
+                      Action
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -165,15 +166,17 @@ const Project = () => {
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Chip
-                          sx={{
-                            px: '4px',
-                            backgroundColor: x?.is_active ? 'success.main' : 'error.main',
-                            color: '#fff',
-                          }}
-                          size="small"
-                          label={x?.is_active ? 'Yes' : 'No'}
-                        ></Chip>
+                        <Tooltip title={`${x?.is_active ? '' : 'Read-Only'}`} placement="top">
+                          <Chip
+                            sx={{
+                              px: '4px',
+                              backgroundColor: x?.is_active ? 'success.main' : 'error.main',
+                              color: '#fff',
+                            }}
+                            size="small"
+                            label={x?.is_active ? 'Yes' : 'No'}
+                          ></Chip>
+                        </Tooltip>
                       </TableCell>
                       <TableCell align="right">
                         <IconButton
@@ -209,12 +212,14 @@ const Project = () => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={() => navigate(`/projects/${selectedProject?._id}`)}>
-          <IconButton aria-label="delete" size="small">
-            <PreviewIcon sx={{ color: amber[500] }} />
-          </IconButton>
-          View
-        </MenuItem>
+        {selectedProject?.is_active && (
+          <MenuItem onClick={() => navigate(`/projects/${selectedProject?._id}`)}>
+            <IconButton aria-label="delete" size="small">
+              <PreviewIcon sx={{ color: amber[500] }} />
+            </IconButton>
+            View
+          </MenuItem>
+        )}
         <MenuItem onClick={onOpenModal}>
           <IconButton aria-label="delete" size="small">
             <CreateIcon sx={{ color: green[500] }} />
