@@ -12,11 +12,12 @@ jwt = module.exports = require("jsonwebtoken");
 md5 = module.exports = require("md5");
 moment = module.exports = require("moment");
 nodemailer = module.exports = require("nodemailer");
+_ = module.exports = require("underscore");
 ejs = module.exports = require("ejs");
 ObjectId = module.exports = mongoose.mongo.ObjectId;
-fs = require("fs");
+const connect = require("./config/database");
 
-app.set("view engine", "ejs");
+fs = require("fs");
 
 require("dotenv").config();
 app.use(cors());
@@ -60,8 +61,25 @@ app.use(function (req, res, next) {
 http.listen(PORT);
 
 //var MONGO_URL = config.MONGO_URL;
-mongoose.connect(env.MONGO_URL);
-mongoose.pluralize(null);
+// mongoose.connect(env.MONGO_URL);
+// mongoose.pluralize(null);
+
+// start the server & connect to Mongo
+connect(env.MONGO_URL)
+  .then(() => {
+    console.log("%s database connected");
+  })
+  .catch((e) => {
+    if (e.name === "MongoParseError") {
+      console.error(
+        `\n\n${e.name}: Please set NODE_ENV to "production", "development", or "staging".\n\n`
+      );
+    } else if (e.name === "MongoNetworkError") {
+      console.error(`\n\n${e.name}: Please start MongoDB\n\n`);
+    } else {
+      console.log(e);
+    }
+  });
 
 console.log("MONGO_URL", env.MONGO_URL);
 
@@ -72,4 +90,5 @@ require("./setting/url_setting.js");
 require("./setting/controllers_setting.js");
 
 // //all scheduled function
-// require("./setting/schedule.js");
+// require("./setting/emailScheduler.js");
+require("./setting/reportScheduler.js");

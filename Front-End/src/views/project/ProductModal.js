@@ -16,6 +16,7 @@ import CustomTextField from 'src/components/forms/theme-elements/CustomTextField
 import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createProduct, updateProduct } from 'src/Services/productServices';
+import { PRODUCT_ORIENTATION } from 'src/helper/raw';
 
 const ProductModal = ({
   open,
@@ -34,9 +35,9 @@ const ProductModal = ({
       title: selectedProduct?.title || '',
       lat: selectedProduct?.lat || selectedCoord?.lat || '',
       lng: selectedProduct?.lng || selectedCoord?.lng || '',
-      orientation: selectedProduct?.orientation || '',
-      inclination: selectedProduct?.inclination || '',
-      power_peak_in_watt: selectedProduct?.power_peak_in_watt || '',
+      orientation: selectedProduct?.orientation || 0,
+      inclination: selectedProduct?.inclination || 0,
+      power_peak_in_watt: selectedProduct?.power_peak_in_watt || 0,
       area_sm: selectedProduct?.area_sm || '',
     },
     validationSchema: Yup.object({
@@ -64,7 +65,6 @@ const ProductModal = ({
     },
     [dispatch, selectedProduct, loadData, handleClose, selectedProject],
   );
-  console.log('values', values);
 
   return (
     <>
@@ -137,7 +137,7 @@ const ProductModal = ({
                 ))}
             </Box>
             <Box mt={'25px'} sx={{ display: 'flex' }}>
-              <Box>
+              <Box sx={{ width: '100%' }}>
                 <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="name">
                   Area Sm
                 </Typography>
@@ -156,7 +156,7 @@ const ProductModal = ({
                   <p style={{ marginBottom: 0, marginTop: 0, color: 'red' }}>{errors?.area_sm}</p>
                 )}
               </Box>
-              <Box>
+              <Box sx={{ width: '100%' }}>
                 <Typography variant="subtitle1" fontWeight={600} component="label" htmlFor="name">
                   Orientation
                 </Typography>
@@ -167,14 +167,13 @@ const ProductModal = ({
                   fullWidth
                   defaultValue={0}
                   name="orientation"
-                  value={values?.orientation || ''}
+                  value={values?.orientation}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 >
-                  <MenuItem value={0}>North</MenuItem>
-                  <MenuItem value={1}>East</MenuItem>
-                  <MenuItem value={2}>South</MenuItem>
-                  <MenuItem value={3}>West</MenuItem>
+                  {PRODUCT_ORIENTATION.map((x) => {
+                    return <MenuItem value={x.value}>{x.key}</MenuItem>;
+                  })}
                 </Select>
                 {errors?.orientation && touched?.orientation && (
                   <p style={{ marginBottom: 0, marginTop: 0, color: 'red' }}>

@@ -6,3 +6,4 @@ apiJwtController = module.exports = require("../controllers/jwt");
 userController = module.exports = require("../controllers/user/user.js");
 projectController = module.exports = require("../controllers/project/project");
 productController = module.exports = require("../controllers/product/product");
+reportController = module.exports = require("../controllers/report/report");

@@ -3,13 +3,28 @@ import { toast } from 'react-toastify';
 import { REACT_APP_APIURL } from 'src/Environment';
 import { setLoading } from 'src/Store/Reducers/AuthSlice';
 import { setProjectList, setSelectedProject } from 'src/Store/Reducers/projectSlice';
+import { addDaysToDate } from 'src/helper/common';
 
-export const getProjectList = () => async (dispatch) => {
+export const getProjectList = (isAddDummy) => async (dispatch) => {
   try {
     dispatch(setLoading(true));
     const response = await axios.get(`${REACT_APP_APIURL}/projects`);
-    const { err, data } = response.data;
+    let { err, data = [] } = response.data;
     if (err === 0) {
+      if (isAddDummy && data) {
+        data.unshift({
+          _id: 'select_project',
+          title: 'Select Project',
+        });
+      }
+      if (data?.length > 0) {
+        const currentDate = new Date();
+        data = data.map((x) => {
+          const dateAfter30Days = addDaysToDate(new Date(x.created_at), 30);
+          x.is_active = currentDate > dateAfter30Days ? false : true;
+          return x;
+        });
+      }
       dispatch(setProjectList(data || []));
       return true;
     }

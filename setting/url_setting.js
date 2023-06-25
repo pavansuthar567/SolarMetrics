@@ -12,6 +12,9 @@ projectApiUrlHandler.BindUrl();
 productApiUrlHandler = module.exports = require("./api/product/product.js");
 productApiUrlHandler.BindUrl();
 
+reportApiUrlHandler = module.exports = require("./api/report/report.js");
+reportApiUrlHandler.BindUrl();
+
 /*
  *  --- END ----
  */

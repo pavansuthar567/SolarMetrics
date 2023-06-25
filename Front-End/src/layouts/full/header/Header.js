@@ -4,9 +4,16 @@ import PropTypes from 'prop-types';
 
 // components
 import Profile from './Profile';
-import { IconBellRinging, IconMenu } from '@tabler/icons';
+import { IconArrowLeft, IconMenu } from '@tabler/icons';
+import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setSelectedProduct } from 'src/Store/Reducers/productSlice';
+import { setSelectedProject } from 'src/Store/Reducers/projectSlice';
+import { setSelectedReport } from 'src/Store/Reducers/reportSlice';
 
 const Header = (props) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   // const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'));
   // const lgDown = useMediaQuery((theme) => theme.breakpoints.down('lg'));
 
@@ -19,10 +26,23 @@ const Header = (props) => {
       minHeight: '70px',
     },
   }));
+
   const ToolbarStyled = styled(Toolbar)(({ theme }) => ({
     width: '100%',
     color: theme.palette.text.secondary,
   }));
+
+  const onClickBack = () => {
+    const rawProject = {
+      title: '',
+      description: '',
+      is_active: true,
+    };
+    dispatch(setSelectedProject(rawProject));
+    dispatch(setSelectedProduct({}));
+    dispatch(setSelectedReport({}));
+    navigate(-1); // Navigates back to the previous page
+  };
 
   return (
     <AppBarStyled position="sticky" color="default">
@@ -52,9 +72,13 @@ const Header = (props) => {
               color: 'primary.main',
             }),
           }}
+          onClick={onClickBack}
         >
-          <Badge variant="dot" color="primary">
-            <IconBellRinging size="21" stroke="1.5" />
+          <Badge
+            // variant="dot"
+            color="primary"
+          >
+            <IconArrowLeft size="21" stroke="1.5" />
           </Badge>
         </IconButton>
         <Box flexGrow={1} />

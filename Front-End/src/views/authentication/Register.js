@@ -78,7 +78,7 @@ const Register2 = () => {
                 handleChange={handleChange}
                 subtext={
                   <Typography variant="subtitle1" textAlign="center" color="textSecondary" mb={1}>
-                    Your Social Campaigns
+                    Empowering Solar Innovations
                   </Typography>
                 }
                 subtitle={
