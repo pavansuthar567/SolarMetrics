@@ -10,7 +10,7 @@ import { getProductList } from 'src/Services/productServices';
 import { setProductList, setSelectedProduct } from 'src/Store/Reducers/productSlice';
 import { getReports } from 'src/Services/reportServices';
 import { setReportList, setSelectedReport } from 'src/Store/Reducers/reportSlice';
-import { IconDownload, IconFileDownload } from '@tabler/icons';
+import { IconDownload } from '@tabler/icons';
 import { isEmpty } from 'lodash';
 import jsPDF from 'jspdf';
 
