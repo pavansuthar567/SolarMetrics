@@ -56,7 +56,6 @@ async function generateAndSendReport(project) {
     const path = `../setting/${fileName}`;
     const filePath = require("path").join(__dirname, path);
     console.log("filePath", filePath);
-    // `E:/Pavan/Git/SolarMetrics/setting/${project._id}_report.xlsx`;
     await workbook.xlsx.writeFile(filePath);
     console.log("Excel report generated successfully.");
 
@@ -77,7 +76,7 @@ async function generateAndSendReport(project) {
 async function checkAndSendReports() {
   try {
     const projects = await Project.find({
-      //   created_at: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+      created_at: { $lt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
     });
 
     for (const project of projects) {
@@ -92,5 +91,5 @@ async function checkAndSendReports() {
 // Schedule the task to run every day at 12:00 AM
 // Schedule the function to check and send reports every night
 // schedule.scheduleJob("0 0 * * *", checkAndSendReports);
-checkAndSendReports();
+// checkAndSendReports();
 // console.log('moment().format("YYYY-MM-DD")', moment().format("YYYY_MM_DD"));

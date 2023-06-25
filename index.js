@@ -19,8 +19,6 @@ const connect = require("./config/database");
 
 fs = require("fs");
 
-app.set("view engine", "ejs");
-
 require("dotenv").config();
 app.use(cors());
 

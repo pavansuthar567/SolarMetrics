@@ -158,6 +158,6 @@ const fetchWeatherData = async (lat, lng) => {
   }
 };
 
-// schedule.scheduleJob("*/20 * * * * *", fetchWeatherDataAndCalculateOutput); // Every 10 Seconds
+// schedule.scheduleJob("*/20 * * * * *", fetchWeatherDataAndCalculateOutput); // Every 20 Seconds
 // Schedule the function to fetch weather data and calculate output every hour
 schedule.scheduleJob("0 * * * *", fetchWeatherDataAndCalculateOutput);

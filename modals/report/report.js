@@ -19,18 +19,6 @@ const reportSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  electricity_output_2: {
-    type: Number,
-    // required: true,
-  },
-  electricity_output_3: {
-    type: Number,
-    // required: true,
-  },
-  electricity_output_4: {
-    type: Number,
-    // required: true,
-  },
   created_at: {
     type: Date,
     default: Date.now,

@@ -86,20 +86,6 @@ module.exports = {
     let d = new Date(date);
     return new Date(d.setDate(d.getDate() + days));
   },
-  GetTimeDifference: function (startDate, endDate, type) {
-    var date1 = new Date(startDate);
-    var date2 = new Date(endDate);
-    var diffMs = date2 - date1;
-
-    if (type == "day") {
-      var timeDiff = Math.abs(date2.getTime() - date1.getTime());
-      var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-      return diffDays;
-    } else if (type == "hour") return Math.round((diffMs % 86400000) / 3600000);
-    else if (type == "minute")
-      return Math.round(((diffMs % 86400000) % 3600000) / 60000);
-    else return Math.round(diffMs / 1000);
-  },
   groupBy: (collection, iteratee, idKey, itemsKey) => {
     const groupResult = _.groupBy(collection, iteratee);
     return Object.keys(groupResult).map((key) => {
