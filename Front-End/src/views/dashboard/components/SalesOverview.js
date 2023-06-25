@@ -10,6 +10,9 @@ import { getProductList } from 'src/Services/productServices';
 import { setProductList, setSelectedProduct } from 'src/Store/Reducers/productSlice';
 import { getReports } from 'src/Services/reportServices';
 import { setReportList, setSelectedReport } from 'src/Store/Reducers/reportSlice';
+import { IconDownload, IconFileDownload } from '@tabler/icons';
+import { isEmpty } from 'lodash';
+import jsPDF from 'jspdf';
 
 const emptyProduct = {
   _id: 'select_product',
@@ -64,6 +67,66 @@ const SalesOverview = () => {
     if (item) dispatch(setSelectedReport(item));
   };
 
+  const onDownloadPdf = () => {
+    const doc = new jsPDF();
+    let y = 20;
+
+    const generateHeader = () => {
+      doc.setFontSize(14);
+      doc.text(`${selectedProject.title} / ${selectedProduct.title}`, 20, y);
+      y += 20;
+    };
+
+    const generateTableHeaders = () => {
+      doc.setFontSize(10);
+      doc.setFillColor('lightgrey');
+      doc.setTextColor(0);
+
+      // Draw background rectangles for each header cell
+      doc.rect(20, y, 30, 10, 'F');
+      doc.rect(50, y, 40, 10, 'F');
+      doc.rect(90, y, 70, 10, 'F');
+
+      // Draw borders for each header cell
+      doc.rect(20, y, 30, 10, 'S');
+      doc.rect(50, y, 40, 10, 'S');
+      doc.rect(90, y, 70, 10, 'S');
+
+      // Set text alignment for each header cell
+      doc.text('Sr. No.', 30, y + 8, { align: 'center' });
+      doc.text('Date', 59, y + 8, { align: 'center' });
+      doc.text('Electricity Output', 108, y + 8, { align: 'center' });
+
+      y += 10;
+    };
+
+    const generateTableData = () => {
+      doc.setFontSize(10);
+      doc.setTextColor(0);
+      selectedReport.data.forEach((item, index) => {
+        if (y > 280) {
+          doc.addPage();
+          y = 20;
+          generateHeader();
+          generateTableHeaders();
+        }
+        doc.rect(20, y, 30, 10);
+        doc.text(`${index + 1}`, 25, y + 8);
+        doc.rect(50, y, 40, 10);
+        doc.text(item.date, 55, y + 8);
+        doc.rect(90, y, 70, 10);
+        doc.text(`${item.electricity_output || 0}`, 95, y + 8);
+        y += 10;
+      });
+    };
+
+    generateHeader();
+    generateTableHeaders();
+    generateTableData();
+
+    doc.save('data.pdf');
+  };
+
   // chart color
   const theme = useTheme();
   const primary = theme.palette.primary.main;
@@ -95,6 +158,9 @@ const SalesOverview = () => {
       foreColor: '#adb0bb',
       toolbar: {
         show: true,
+        tools: {
+          download: false, // <== line to add
+        },
       },
       height: 370,
     },
@@ -212,6 +278,11 @@ const SalesOverview = () => {
                 );
               })}
           </Select>
+          {!isEmpty(selectedReport) && selectedReport._id !== 'select_report' && (
+            <div className="download-icon" style={{ display: 'flex' }} onClick={onDownloadPdf}>
+              <IconDownload size="24" stroke="1" />
+            </div>
+          )}
         </div>
       }
     >
